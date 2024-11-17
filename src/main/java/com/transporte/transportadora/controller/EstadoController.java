@@ -35,15 +35,15 @@ public class EstadoController {
 
     @PutMapping("/{uf}")
     public ResponseEntity<Estado> atualizar(@PathVariable String uf, @RequestBody Estado estadoAtualizado) {
-        return estadoRepository.findById(uf)
-                .map(estado -> {
-                    estado.setNomeEst(estadoAtualizado.getNomeEst());
-                    estado.setIcmsLocal(estadoAtualizado.getIcmsLocal());
-                    estado.setIcmsOutroUf(estadoAtualizado.getIcmsOutroUf());
-                    return ResponseEntity.ok(estadoRepository.save(estado));
-                })
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+        return estadoRepository.findById(uf).map(estado -> {
+            estado.setNome(estadoAtualizado.getNome()); // Alterado para 'setNome'
+            estado.setIcmsLocal(estadoAtualizado.getIcmsLocal());
+            estado.setIcmsOutroUf(estadoAtualizado.getIcmsOutroUf());
+            estadoRepository.save(estado);
+            return ResponseEntity.ok(estado);
+        }).orElse(ResponseEntity.notFound().build());
     }
+
 
     @DeleteMapping("/{uf}")
     public ResponseEntity<Void> deletar(@PathVariable String uf) {

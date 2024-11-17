@@ -10,47 +10,41 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cidades")
+@RequestMapping("/cidade")
 public class CidadeController {
 
     @Autowired
     private CidadeRepository cidadeRepository;
 
     @GetMapping
-    public ResponseEntity<List<Cidade>> listarTodas() {
-        return ResponseEntity.ok(cidadeRepository.findAll());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Cidade> buscarPorId(@PathVariable Long id) {
-        return cidadeRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+    public List<Cidade> listarTodas() {
+        return cidadeRepository.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<Cidade> criar(@RequestBody Cidade cidade) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(cidadeRepository.save(cidade));
+    public ResponseEntity<Cidade> criarCidade(@RequestBody Cidade cidade) {
+        Cidade novaCidade = cidadeRepository.save(cidade);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novaCidade);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cidade> atualizar(@PathVariable Long id, @RequestBody Cidade cidadeAtualizada) {
-        return cidadeRepository.findById(id)
-                .map(cidade -> {
-                    cidade.setNomeCid(cidadeAtualizada.getNomeCid());
-                    cidade.setEstado(cidadeAtualizada.getEstado());
-                    return ResponseEntity.ok(cidadeRepository.save(cidade));
-                })
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+    public ResponseEntity<Cidade> atualizarCidade(@PathVariable Long id, @RequestBody Cidade cidadeAtualizada) {
+        return cidadeRepository.findById(id).map(cidade -> {
+            cidade.setNome(cidadeAtualizada.getNome());
+            cidade.setEstado(cidadeAtualizada.getEstado());
+            cidade.setPrecoUnitPeso(cidadeAtualizada.getPrecoUnitPeso());
+            cidade.setPrecoUnitValor(cidadeAtualizada.getPrecoUnitValor());
+            cidadeRepository.save(cidade);
+            return ResponseEntity.ok(cidade);
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        if (cidadeRepository.existsById(id)) {
-            cidadeRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<Void> excluirCidade(@PathVariable Long id) {
+        return cidadeRepository.findById(id).map(cidade -> {
+            cidadeRepository.delete(cidade);
+            return ResponseEntity.noContent().<Void>build(); // Corrigindo para <Void>
+        }).orElse(ResponseEntity.notFound().build());
     }
+
 }

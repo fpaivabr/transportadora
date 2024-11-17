@@ -5,33 +5,38 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "cidade")
 public class Cidade {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigoCid;
+    private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String nomeCid;
+    @Column(nullable = false)
+    private String nome;
 
     @ManyToOne
-    @JoinColumn(name = "uf", nullable = false)
+    @JoinColumn(name = "estado_id", nullable = false)
     private Estado estado;
 
+    @Column(name = "preco_unit_peso", nullable = false)
+    private Double precoUnitPeso;
+
+    @Column(name = "preco_unit_valor", nullable = false)
+    private Double precoUnitValor;
+
     // Getters e Setters
-    public Long getCodigoCid() {
-        return codigoCid;
+    public Long getId() {
+        return id;
     }
 
-    public void setCodigoCid(Long codigoCid) {
-        this.codigoCid = codigoCid;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getNomeCid() {
-        return nomeCid;
+    public String getNome() {
+        return nome;
     }
 
-    public void setNomeCid(String nomeCid) {
-        this.nomeCid = nomeCid;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public Estado getEstado() {
@@ -41,5 +46,20 @@ public class Cidade {
     public void setEstado(Estado estado) {
         this.estado = estado;
     }
-}
 
+    public Double getPrecoUnitPeso() {
+        return precoUnitPeso;
+    }
+
+    public void setPrecoUnitPeso(Double precoUnitPeso) {
+        this.precoUnitPeso = precoUnitPeso;
+    }
+
+    public Double getPrecoUnitValor() {
+        return precoUnitValor;
+    }
+
+    public void setPrecoUnitValor(Double precoUnitValor) {
+        this.precoUnitValor = precoUnitValor;
+    }
+}
