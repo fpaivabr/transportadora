@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class PessoaJuridica {
 
     @Id
-    private Long codCli; // Mesma chave primária de Cliente
+    private Long codCli;
 
     @OneToOne
     @MapsId

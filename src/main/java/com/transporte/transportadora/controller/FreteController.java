@@ -1,7 +1,7 @@
 package com.transporte.transportadora.controller;
 
 import com.transporte.transportadora.model.Frete;
-import com.transporte.transportadora.repository.FreteRepository;
+import com.transporte.transportadora.service.FreteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,52 +14,43 @@ import java.util.List;
 public class FreteController {
 
     @Autowired
-    private FreteRepository freteRepository;
+    private FreteService freteService;
 
     @GetMapping
     public ResponseEntity<List<Frete>> listarTodos() {
-        List<Frete> fretes = freteRepository.findAll();
+        List<Frete> fretes = freteService.listarTodos();
         return ResponseEntity.ok(fretes);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Frete> buscarPorId(@PathVariable Long id) {
-        return freteRepository.findById(id)
+        return freteService.buscarPorId(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
     public ResponseEntity<Frete> criar(@RequestBody Frete frete) {
-        Frete novoFrete = freteRepository.save(frete);
+        Frete novoFrete = freteService.salvarFrete(frete);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoFrete);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Frete> atualizar(@PathVariable Long id, @RequestBody Frete freteAtualizado) {
-        return freteRepository.findById(id)
-                .map(frete -> {
-                    frete.setDataFrete(freteAtualizado.getDataFrete());
-                    frete.setPeso(freteAtualizado.getPeso());
-                    frete.setValor(freteAtualizado.getValor());
-                    frete.setIcms(freteAtualizado.getIcms());
-                    frete.setPedagio(freteAtualizado.getPedagio());
-                    frete.setRemetente(freteAtualizado.getRemetente());
-                    frete.setDestinatario(freteAtualizado.getDestinatario());
-                    frete.setOrigem(freteAtualizado.getOrigem());
-                    frete.setDestino(freteAtualizado.getDestino());
-                    Frete atualizado = freteRepository.save(frete);
-                    return ResponseEntity.ok(atualizado);
-                })
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+        try {
+            Frete frete = freteService.atualizarFrete(id, freteAtualizado);
+            return ResponseEntity.ok(frete);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        if (freteRepository.existsById(id)) {
-            freteRepository.deleteById(id);
+        try {
+            freteService.deletarFrete(id);
             return ResponseEntity.noContent().build();
-        } else {
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
