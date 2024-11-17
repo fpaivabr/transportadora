@@ -22,7 +22,7 @@ public class EstadoController {
     }
 
     @GetMapping("/{uf}")
-    public ResponseEntity<Estado> buscarPorUf(@PathVariable String uf) {
+    public ResponseEntity<Estado> buscarPorUf(@PathVariable Long uf) {
         return estadoRepository.findById(uf)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
@@ -34,7 +34,7 @@ public class EstadoController {
     }
 
     @PutMapping("/{uf}")
-    public ResponseEntity<Estado> atualizar(@PathVariable String uf, @RequestBody Estado estadoAtualizado) {
+    public ResponseEntity<Estado> atualizar(@PathVariable Long uf, @RequestBody Estado estadoAtualizado) {
         return estadoRepository.findById(uf).map(estado -> {
             estado.setNome(estadoAtualizado.getNome()); // Alterado para 'setNome'
             estado.setIcmsLocal(estadoAtualizado.getIcmsLocal());
@@ -46,7 +46,7 @@ public class EstadoController {
 
 
     @DeleteMapping("/{uf}")
-    public ResponseEntity<Void> deletar(@PathVariable String uf) {
+    public ResponseEntity<Void> deletar(@PathVariable Long uf) {
         if (estadoRepository.existsById(uf)) {
             estadoRepository.deleteById(uf);
             return ResponseEntity.noContent().build();
