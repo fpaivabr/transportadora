@@ -1,6 +1,6 @@
 package com.transporte.transportadora;
 
-import com.transporte.transportadora.ui.freteui.FreteCadastroUI;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -12,6 +12,6 @@ public class TransportadoraApplication {
 
 		SpringApplication.run(TransportadoraApplication.class, args);
 
-		javax.swing.SwingUtilities.invokeLater(FreteCadastroUI::new);
+		javax.swing.SwingUtilities.invokeLater(MainUI::new);
 	}
 }

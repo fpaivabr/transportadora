@@ -1,5 +1,6 @@
 package com.transporte.transportadora.service;
 
+import com.transporte.transportadora.model.Cliente;
 import com.transporte.transportadora.model.Frete;
 import java.util.List;
 import java.util.Optional;
@@ -15,4 +16,6 @@ public interface FreteService {
     Frete atualizarFrete(Long id, Frete frete);
 
     void deletarFrete(Long id);
+
+    List<Frete> buscarFretesPorRemetente(Cliente remetente);
 }

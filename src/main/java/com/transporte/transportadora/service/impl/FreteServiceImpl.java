@@ -1,5 +1,6 @@
 package com.transporte.transportadora.service.impl;
 
+import com.transporte.transportadora.model.Cliente;
 import com.transporte.transportadora.model.Frete;
 import com.transporte.transportadora.repository.FreteRepository;
 import com.transporte.transportadora.service.FreteService;
@@ -61,6 +62,15 @@ public class FreteServiceImpl implements FreteService {
             throw new RuntimeException("Frete não encontrado com o ID: " + id);
         }
     }
+
+    @Override
+    public List<Frete> buscarFretesPorRemetente(Cliente remetente) {
+        if (remetente == null) {
+            throw new IllegalArgumentException("O remetente não pode ser nulo.");
+        }
+        return freteRepository.findByRemetente(remetente);
+    }
+
 
     /**
      * Método para validar os campos do frete.
