@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-public class FreteCadastroUI extends JFrame {
+public class FreteCreateUI extends JFrame {
 
     private JFormattedTextField txtDataFrete;
     private JFormattedTextField txtPeso;
@@ -39,7 +39,7 @@ public class FreteCadastroUI extends JFrame {
     private ClienteService clienteService;
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public FreteCadastroUI() {
+    public FreteCreateUI() {
         freteService = new FreteServiceImpl();
         cidadeService = new CidadeServiceImpl();
         clienteService = new ClienteServiceImpl();
@@ -221,6 +221,6 @@ public class FreteCadastroUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        new FreteCadastroUI();
+        new FreteCreateUI();
     }
 }

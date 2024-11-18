@@ -9,7 +9,7 @@ import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.text.DecimalFormat;
 
-public class EstadoCadastroUI extends JFrame {
+public class EstadoCreateUI extends JFrame {
 
     private JTextField txtNome;
     private JFormattedTextField txtIcmsLocal;
@@ -18,7 +18,7 @@ public class EstadoCadastroUI extends JFrame {
 
     private EstadoService estadoService;
 
-    public EstadoCadastroUI() {
+    public EstadoCreateUI() {
         estadoService = new EstadoServiceImpl();
         setTitle("Cadastro de Estado");
         setSize(400, 300);
@@ -89,7 +89,5 @@ public class EstadoCadastroUI extends JFrame {
         txtIcmsOutroUf.setValue(null);
     }
 
-    public static void main(String[] args) {
-        new EstadoCadastroUI();
-    }
+    public static void main(String[] args) { new EstadoCreateUI(); }
 }
