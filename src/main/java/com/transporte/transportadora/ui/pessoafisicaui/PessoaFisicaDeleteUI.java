@@ -3,20 +3,26 @@ package com.transporte.transportadora.ui.pessoafisicaui;
 import com.transporte.transportadora.model.PessoaFisica;
 import com.transporte.transportadora.service.PessoaFisicaService;
 import com.transporte.transportadora.service.impl.PessoaFisicaServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-
+@Lazy
+@Component
 public class PessoaFisicaDeleteUI extends JFrame {
 
     private JComboBox<PessoaFisica> cmbPessoasFisicas;
     private JButton btnDeletar;
 
-    private PessoaFisicaService pessoaFisicaService;
+    private final PessoaFisicaService pessoaFisicaService;
 
-    public PessoaFisicaDeleteUI() {
-        pessoaFisicaService = new PessoaFisicaServiceImpl();
+    public PessoaFisicaDeleteUI(PessoaFisicaService pessoaFisicaService) {
+        this.pessoaFisicaService = pessoaFisicaService;
+        initUI();
+    }
+    private void initUI() {
         setTitle("Deletar Pessoa Física");
         setSize(400, 150);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -71,9 +77,5 @@ public class PessoaFisicaDeleteUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao deletar Pessoa Física: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        new PessoaFisicaDeleteUI();
     }
 }

@@ -2,6 +2,7 @@ package com.transporte.transportadora.service.impl;
 
 import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.repository.CidadeRepository;
+import com.transporte.transportadora.repository.EstadoRepository;
 import com.transporte.transportadora.service.CidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,12 @@ import java.util.Optional;
 @Service
 public class CidadeServiceImpl implements CidadeService {
 
-    @Autowired
-    private CidadeRepository cidadeRepository;
+
+    private final CidadeRepository cidadeRepository;
+
+    public CidadeServiceImpl(CidadeRepository cidadeRepository){
+        this.cidadeRepository = cidadeRepository;
+    }
 
     @Override
     public Cidade salvarCidade(Cidade cidade) {

@@ -3,10 +3,13 @@ package com.transporte.transportadora.ui.pessoajuridicaui;
 import com.transporte.transportadora.model.PessoaJuridica;
 import com.transporte.transportadora.service.PessoaJuridicaService;
 import com.transporte.transportadora.service.impl.PessoaJuridicaServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
-
+@Lazy
+@Component
 public class PessoaJuridicaCreateUI extends JFrame {
 
     private JTextField txtRazaoSocial;
@@ -14,10 +17,13 @@ public class PessoaJuridicaCreateUI extends JFrame {
     private JTextField txtInscEstadual;
     private JButton btnSalvar;
 
-    private PessoaJuridicaService pessoaJuridicaService;
+    private final PessoaJuridicaService pessoaJuridicaService;
 
-    public PessoaJuridicaCreateUI() {
-        pessoaJuridicaService = new PessoaJuridicaServiceImpl();
+    public PessoaJuridicaCreateUI(PessoaJuridicaService pessoaJuridicaService) {
+        this.pessoaJuridicaService = pessoaJuridicaService;
+        initUI();
+    }
+    private void initUI() {
         setTitle("Criar Pessoa Jurídica");
         setSize(400, 250);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -83,9 +89,5 @@ public class PessoaJuridicaCreateUI extends JFrame {
         txtRazaoSocial.setText("");
         txtCnpj.setText("");
         txtInscEstadual.setText("");
-    }
-
-    public static void main(String[] args) {
-        new PessoaJuridicaCreateUI();
     }
 }

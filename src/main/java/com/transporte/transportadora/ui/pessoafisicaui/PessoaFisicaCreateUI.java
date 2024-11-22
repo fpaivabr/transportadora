@@ -3,20 +3,26 @@ package com.transporte.transportadora.ui.pessoafisicaui;
 import com.transporte.transportadora.model.PessoaFisica;
 import com.transporte.transportadora.service.PessoaFisicaService;
 import com.transporte.transportadora.service.impl.PessoaFisicaServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
-
+@Lazy
+@Component
 public class PessoaFisicaCreateUI extends JFrame {
 
     private JTextField txtNome;
     private JTextField txtCpf;
     private JButton btnSalvar;
 
-    private PessoaFisicaService pessoaFisicaService;
+    private final PessoaFisicaService pessoaFisicaService;
 
-    public PessoaFisicaCreateUI() {
-        pessoaFisicaService = new PessoaFisicaServiceImpl();
+    public PessoaFisicaCreateUI(PessoaFisicaService pessoaFisicaService) {
+        this.pessoaFisicaService = pessoaFisicaService;
+        initUI();
+    }
+    private void initUI() {
         setTitle("Criar Pessoa Física");
         setSize(400, 200);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -72,9 +78,5 @@ public class PessoaFisicaCreateUI extends JFrame {
     private void limparCampos() {
         txtNome.setText("");
         txtCpf.setText("");
-    }
-
-    public static void main(String[] args) {
-        new PessoaFisicaCreateUI();
     }
 }

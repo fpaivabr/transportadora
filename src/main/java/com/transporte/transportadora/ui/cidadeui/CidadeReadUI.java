@@ -3,18 +3,25 @@ package com.transporte.transportadora.ui.cidadeui;
 import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.impl.CidadeServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-
+@Lazy
+@Component
 public class CidadeReadUI extends JFrame {
 
     private JTable tabelaCidades;
-    private CidadeService cidadeService;
+    private final CidadeService cidadeService;
 
-    public CidadeReadUI() {
-        cidadeService = new CidadeServiceImpl();
+    public CidadeReadUI(CidadeService cidadeService) {
+        this.cidadeService = cidadeService;
+        initUI();
+    }
+
+    private void initUI() {
         setTitle("Listar Cidades");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -50,8 +57,5 @@ public class CidadeReadUI extends JFrame {
             return new String[0][0];
         }
     }
-
-    public static void main(String[] args) {
-        new CidadeReadUI();
-    }
 }
+

@@ -3,20 +3,27 @@ package com.transporte.transportadora.ui.cidadeui;
 import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.impl.CidadeServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-
+@Lazy
+@Component
 public class CidadeDeleteUI extends JFrame {
 
     private JComboBox<Cidade> cmbCidades;
     private JButton btnDeletar;
 
-    private CidadeService cidadeService;
+    private final CidadeService cidadeService;
 
-    public CidadeDeleteUI() {
-        cidadeService = new CidadeServiceImpl();
+    public CidadeDeleteUI(CidadeService cidadeService) {
+        this.cidadeService = cidadeService;
+        initUI();
+    }
+
+    private void initUI() {
         setTitle("Excluir Cidade");
         setSize(400, 200);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -72,8 +79,5 @@ public class CidadeDeleteUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao excluir cidade: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    public static void main(String[] args) {
-        new CidadeDeleteUI();
-    }
 }
+

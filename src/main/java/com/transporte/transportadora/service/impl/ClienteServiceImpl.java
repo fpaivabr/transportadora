@@ -2,6 +2,7 @@ package com.transporte.transportadora.service.impl;
 
 import com.transporte.transportadora.model.Cliente;
 import com.transporte.transportadora.repository.ClienteRepository;
+import com.transporte.transportadora.repository.EstadoRepository;
 import com.transporte.transportadora.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,11 @@ import java.util.Optional;
 @Service
 public class ClienteServiceImpl implements ClienteService {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
+    private final ClienteRepository clienteRepository;
+
+    public ClienteServiceImpl(ClienteRepository clienteRepository){
+        this.clienteRepository = clienteRepository;
+    }
 
     @Override
     public Cliente salvarCliente(Cliente cliente) {

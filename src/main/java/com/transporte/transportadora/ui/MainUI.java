@@ -6,17 +6,25 @@ import com.transporte.transportadora.ui.estadoui.*;
 import com.transporte.transportadora.ui.freteui.*;
 import com.transporte.transportadora.ui.pessoafisicaui.*;
 import com.transporte.transportadora.ui.pessoajuridicaui.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 
+@Component
 public class MainUI extends JFrame {
 
     private JComboBox<String> tabelaComboBox;
     private JComboBox<String> operacaoComboBox;
     private JButton confirmarButton;
+    private final ApplicationContext context;
+    public MainUI(ApplicationContext context) {
+        this.context = context;
+        initUI();
+    }
 
-    public MainUI() {
+    private void initUI() {
         setTitle("Sistema de Transporte - Tela Inicial");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,88 +77,86 @@ public class MainUI extends JFrame {
         JFrame tela = null;
 
         switch (tabela + operacao) {
-            // Telas de Cidade
             case "CidadeCadastrar":
-                tela = new CidadeCreateUI();
+                tela = context.getBean(CidadeCreateUI.class);
                 break;
             case "CidadeListar":
-                tela = new CidadeReadUI();
+                tela = context.getBean(CidadeReadUI.class);
                 break;
             case "CidadeAtualizar":
-                tela = new CidadeUpdateUI();
+                tela = context.getBean(CidadeUpdateUI.class);
                 break;
             case "CidadeDeletar":
-                tela = new CidadeDeleteUI();
+                tela = context.getBean(CidadeDeleteUI.class);
                 break;
 
-            // Telas de Cliente
             case "ClienteCadastrar":
-                tela = new ClienteCreateUI();
+                tela = context.getBean(ClienteCreateUI.class);
                 break;
             case "ClienteListar":
-                tela = new ClienteCreateUI();
+                tela = context.getBean(ClienteCreateUI.class);
                 break;
             case "ClienteAtualizar":
-                tela = new ClienteCreateUI();
+                tela = context.getBean(ClienteCreateUI.class);
                 break;
             case "ClienteDeletar":
-                tela = new ClienteCreateUI();
+                tela = context.getBean(ClienteCreateUI.class);
                 break;
 
             // Telas de Estado
             case "EstadoCadastrar":
-                tela = new EstadoCreateUI();
+                tela = context.getBean(EstadoCreateUI.class);
                 break;
             case "EstadoListar":
-                tela = new EstadoReadUI();
+                tela = context.getBean(EstadoReadUI.class);
                 break;
             case "EstadoAtualizar":
-                tela = new EstadoUpdateUI();
+                tela = context.getBean(EstadoUpdateUI.class);
                 break;
             case "EstadoDeletar":
-                tela = new EstadoDeleteUI();
+                tela = context.getBean(EstadoDeleteUI.class);
                 break;
 
             // Telas de Frete
             case "FreteCadastrar":
-                tela = new FreteCreateUI();
+                tela = context.getBean(FreteCreateUI.class);
                 break;
             case "FreteListar":
-                tela = new FreteReadUI();
+                tela = context.getBean(FreteReadUI.class);
                 break;
             case "FreteAtualizar":
-                tela = new FreteUpdateUI();
+                tela = context.getBean(FreteUpdateUI.class);
                 break;
             case "FreteDeletar":
-                tela = new FreteDeleteUI();
+                tela = context.getBean(FreteDeleteUI.class);
                 break;
 
             // Telas de Pessoa Física
             case "Pessoa FísicaCadastrar":
-                tela = new PessoaFisicaCreateUI();
+                tela = context.getBean(PessoaFisicaCreateUI.class);
                 break;
             case "Pessoa FísicaListar":
-                tela = new PessoaFisicaReadUI();
+                tela = context.getBean(PessoaFisicaReadUI.class);
                 break;
             case "Pessoa FísicaAtualizar":
-                tela = new PessoaFisicaUpdateUI();
+                tela = context.getBean(PessoaFisicaUpdateUI.class);
                 break;
             case "Pessoa FísicaDeletar":
-                tela = new PessoaFisicaDeleteUI();
+                tela = context.getBean(PessoaFisicaDeleteUI.class);
                 break;
 
             // Telas de Pessoa Jurídica
             case "Pessoa JurídicaCadastrar":
-                tela = new PessoaJuridicaCreateUI();
+                tela = context.getBean(PessoaJuridicaCreateUI.class);
                 break;
             case "Pessoa JurídicaListar":
-                tela = new PessoaJuridicaReadUI();
+                tela = context.getBean(PessoaJuridicaReadUI.class);
                 break;
             case "Pessoa JurídicaAtualizar":
-                tela = new PessoaJuridicaUpdateUI();
+                tela = context.getBean(PessoaJuridicaUpdateUI.class);
                 break;
             case "Pessoa JurídicaDeletar":
-                tela = new PessoaJuridicaDeleteUI();
+                tela = context.getBean(PessoaJuridicaDeleteUI.class);
                 break;
 
             default:
@@ -168,9 +174,5 @@ public class MainUI extends JFrame {
                 }
             });
         }
-    }
-
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(MainUI::new);
     }
 }

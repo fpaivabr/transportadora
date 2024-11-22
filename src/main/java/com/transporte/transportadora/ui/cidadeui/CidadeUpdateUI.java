@@ -6,12 +6,15 @@ import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.EstadoService;
 import com.transporte.transportadora.service.impl.CidadeServiceImpl;
 import com.transporte.transportadora.service.impl.EstadoServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.util.List;
-
+@Lazy
+@Component
 public class CidadeUpdateUI extends JFrame {
 
     private JComboBox<Cidade> cmbCidades;
@@ -21,12 +24,16 @@ public class CidadeUpdateUI extends JFrame {
     private JFormattedTextField txtPrecoUnitValor;
     private JButton btnAtualizar;
 
-    private CidadeService cidadeService;
-    private EstadoService estadoService;
+    private final CidadeService cidadeService;
+    private final EstadoService estadoService;
 
-    public CidadeUpdateUI() {
-        cidadeService = new CidadeServiceImpl();
-        estadoService = new EstadoServiceImpl();
+    public CidadeUpdateUI(EstadoService estadoService, CidadeService cidadeService) {
+        this.cidadeService = cidadeService;
+        this.estadoService = estadoService;
+        initUI();
+    }
+
+    private void initUI() {
         setTitle("Atualizar Cidade");
         setSize(500, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -129,8 +136,5 @@ public class CidadeUpdateUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar cidade: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    public static void main(String[] args) {
-        new CidadeUpdateUI();
-    }
 }
+

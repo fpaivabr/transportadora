@@ -12,8 +12,11 @@ import java.util.Optional;
 @Service
 public class PessoaJuridicaServiceImpl implements PessoaJuridicaService {
 
-    @Autowired
-    private PessoaJuridicaRepository pessoaJuridicaRepository;
+    private final PessoaJuridicaRepository pessoaJuridicaRepository;
+
+    public PessoaJuridicaServiceImpl(PessoaJuridicaRepository pessoaJuridicaRepository){
+        this.pessoaJuridicaRepository = pessoaJuridicaRepository;
+    }
 
     @Override
     public PessoaJuridica salvarPessoaJuridica(PessoaJuridica pessoaJuridica) {

@@ -3,18 +3,25 @@ package com.transporte.transportadora.ui.estadoui;
 import com.transporte.transportadora.model.Estado;
 import com.transporte.transportadora.service.EstadoService;
 import com.transporte.transportadora.service.impl.EstadoServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-
+@Lazy
+@Component
 public class EstadoReadUI extends JFrame {
 
     private JTable tabelaEstados;
-    private EstadoService estadoService;
+    private final EstadoService estadoService;
 
-    public EstadoReadUI() {
-        estadoService = new EstadoServiceImpl();
+    public EstadoReadUI(EstadoService estadoService) {
+        this.estadoService = estadoService;
+        initUI();
+    }
+
+        private void initUI() {
         setTitle("Listar Estados");
         setSize(500, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -47,9 +54,5 @@ public class EstadoReadUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             return new String[0][0];
         }
-    }
-
-    public static void main(String[] args) {
-        new EstadoReadUI();
     }
 }

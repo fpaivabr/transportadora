@@ -3,11 +3,14 @@ package com.transporte.transportadora.ui.pessoajuridicaui;
 import com.transporte.transportadora.model.PessoaJuridica;
 import com.transporte.transportadora.service.PessoaJuridicaService;
 import com.transporte.transportadora.service.impl.PessoaJuridicaServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-
+@Lazy
+@Component
 public class PessoaJuridicaUpdateUI extends JFrame {
 
     private JComboBox<PessoaJuridica> cmbPessoasJuridicas;
@@ -16,10 +19,13 @@ public class PessoaJuridicaUpdateUI extends JFrame {
     private JTextField txtCnpj;
     private JButton btnAtualizar;
 
-    private PessoaJuridicaService pessoaJuridicaService;
+    private final PessoaJuridicaService pessoaJuridicaService;
 
-    public PessoaJuridicaUpdateUI() {
-        pessoaJuridicaService = new PessoaJuridicaServiceImpl();
+    public PessoaJuridicaUpdateUI(PessoaJuridicaService pessoaJuridicaService) {
+        this.pessoaJuridicaService = pessoaJuridicaService;
+        initUI();
+    }
+    private void initUI() {
         setTitle("Atualizar Pessoa Jurídica");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -113,9 +119,5 @@ public class PessoaJuridicaUpdateUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar Pessoa Jurídica: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        new PessoaJuridicaUpdateUI();
     }
 }

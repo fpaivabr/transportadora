@@ -2,13 +2,15 @@ package com.transporte.transportadora.ui.estadoui;
 
 import com.transporte.transportadora.model.Estado;
 import com.transporte.transportadora.service.EstadoService;
-import com.transporte.transportadora.service.impl.EstadoServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.text.DecimalFormat;
-
+@Lazy
+@Component
 public class EstadoCreateUI extends JFrame {
 
     private JTextField txtNome;
@@ -16,10 +18,14 @@ public class EstadoCreateUI extends JFrame {
     private JFormattedTextField txtIcmsOutroUf;
     private JButton btnSalvar;
 
-    private EstadoService estadoService;
 
-    public EstadoCreateUI() {
-        estadoService = new EstadoServiceImpl();
+    private final EstadoService estadoService;
+
+    public EstadoCreateUI(EstadoService estadoService) {
+        this.estadoService = estadoService;
+        initUI();
+    }
+    private void initUI() {
         setTitle("Cadastro de Estado");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -88,6 +94,4 @@ public class EstadoCreateUI extends JFrame {
         txtIcmsLocal.setValue(null);
         txtIcmsOutroUf.setValue(null);
     }
-
-    public static void main(String[] args) { new EstadoCreateUI(); }
 }

@@ -12,8 +12,12 @@ import java.util.Optional;
 @Service
 public class PessoaFisicaServiceImpl implements PessoaFisicaService {
 
-    @Autowired
-    private PessoaFisicaRepository pessoaFisicaRepository;
+
+    private final PessoaFisicaRepository pessoaFisicaRepository;
+
+    public PessoaFisicaServiceImpl(PessoaFisicaRepository pessoaFisicaRepository){
+        this.pessoaFisicaRepository = pessoaFisicaRepository;
+    }
 
     @Override
     public PessoaFisica salvarPessoaFisica(PessoaFisica pessoaFisica) {

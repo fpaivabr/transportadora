@@ -3,20 +3,26 @@ package com.transporte.transportadora.ui.pessoajuridicaui;
 import com.transporte.transportadora.model.PessoaJuridica;
 import com.transporte.transportadora.service.PessoaJuridicaService;
 import com.transporte.transportadora.service.impl.PessoaJuridicaServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-
+@Lazy
+@Component
 public class PessoaJuridicaDeleteUI extends JFrame {
 
     private JComboBox<PessoaJuridica> cmbPessoasJuridicas;
     private JButton btnDeletar;
 
-    private PessoaJuridicaService pessoaJuridicaService;
+    private final PessoaJuridicaService pessoaJuridicaService;
 
-    public PessoaJuridicaDeleteUI() {
-        pessoaJuridicaService = new PessoaJuridicaServiceImpl();
+    public PessoaJuridicaDeleteUI(PessoaJuridicaService pessoaJuridicaService) {
+        this.pessoaJuridicaService = pessoaJuridicaService;
+        initUI();
+    }
+    private void initUI() {
         setTitle("Deletar Pessoa Jurídica");
         setSize(400, 150);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -71,9 +77,5 @@ public class PessoaJuridicaDeleteUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao deletar Pessoa Jurídica: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        new PessoaJuridicaDeleteUI();
     }
 }

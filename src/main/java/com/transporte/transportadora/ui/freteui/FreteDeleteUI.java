@@ -1,22 +1,30 @@
 package com.transporte.transportadora.ui.freteui;
 
 import com.transporte.transportadora.model.Frete;
+import com.transporte.transportadora.repository.FreteRepository;
 import com.transporte.transportadora.service.FreteService;
 import com.transporte.transportadora.service.impl.FreteServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+@Lazy
+@Component
 public class FreteDeleteUI extends JFrame {
 
     private JComboBox<Frete> cmbFretes;
     private JButton btnDeletar;
 
-    private FreteService freteService;
+    private final FreteService freteService;
 
-    public FreteDeleteUI() {
-        freteService = new FreteServiceImpl();
+    public FreteDeleteUI(FreteService freteService) {
+        this.freteService = freteService;
+        initUI();
+    }
+    private void initUI() {
 
         setTitle("Deletar Frete");
         setSize(400, 200);
@@ -74,9 +82,5 @@ public class FreteDeleteUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao deletar frete: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        new FreteDeleteUI();
     }
 }

@@ -6,31 +6,37 @@ import com.transporte.transportadora.model.PessoaJuridica;
 import com.transporte.transportadora.model.TipoCliente;
 import com.transporte.transportadora.service.ClienteService;
 import com.transporte.transportadora.service.impl.ClienteServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
+@Lazy
+@Component
 public class ClienteCreateUI extends JFrame {
 
     private JTextField txtEndereco;
     private JTextField txtTelefone;
     private JTextField txtDataInsc;
     private JComboBox<TipoCliente> cmbTipoCliente;
-    private JTextField txtNomeCli; // Campo exclusivo para Pessoa Física
-    private JTextField txtCpf; // Campo exclusivo para Pessoa Física
-    private JTextField txtRazaoSocial; // Campo exclusivo para Pessoa Jurídica
-    private JTextField txtCnpj; // Campo exclusivo para Pessoa Jurídica
-    private JTextField txtInscEstadual; // Campo exclusivo para Pessoa Jurídica
+    private JTextField txtNomeCli;
+    private JTextField txtCpf;
+    private JTextField txtRazaoSocial;
+    private JTextField txtCnpj;
+    private JTextField txtInscEstadual;
     private JButton btnSalvar;
 
-    private ClienteService clienteService;
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final ClienteService clienteService;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public ClienteCreateUI() {
-        clienteService = new ClienteServiceImpl();
+    public ClienteCreateUI(ClienteService clienteService) {
+        this.clienteService = clienteService;
+        initUI();
+    }
 
+    private void initUI() {
         setTitle("Cadastrar Cliente");
         setSize(400, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -42,11 +48,13 @@ public class ClienteCreateUI extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
+        // Endereço
         add(new JLabel("Endereço:"), gbc);
         gbc.gridx = 1;
         txtEndereco = new JTextField(20);
         add(txtEndereco, gbc);
 
+        // Telefone
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Telefone:"), gbc);
@@ -54,6 +62,7 @@ public class ClienteCreateUI extends JFrame {
         txtTelefone = new JTextField(20);
         add(txtTelefone, gbc);
 
+        // Data de Inscrição
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Data de Inscrição (dd/MM/yyyy):"), gbc);
@@ -61,6 +70,7 @@ public class ClienteCreateUI extends JFrame {
         txtDataInsc = new JTextField(20);
         add(txtDataInsc, gbc);
 
+        // Tipo de Cliente
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Tipo de Cliente:"), gbc);
@@ -106,11 +116,12 @@ public class ClienteCreateUI extends JFrame {
         txtInscEstadual = new JTextField(20);
         add(txtInscEstadual, gbc);
 
+        // Botão Salvar
         gbc.gridx = 0;
         gbc.gridy++;
+        gbc.gridwidth = 2;
         btnSalvar = new JButton("Salvar");
         btnSalvar.addActionListener(e -> salvarCliente());
-        gbc.gridwidth = 2;
         add(btnSalvar, gbc);
 
         atualizarCamposEspecificos();
@@ -167,9 +178,5 @@ public class ClienteCreateUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        new ClienteCreateUI();
     }
 }

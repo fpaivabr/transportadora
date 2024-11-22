@@ -3,20 +3,26 @@ package com.transporte.transportadora.ui.estadoui;
 import com.transporte.transportadora.model.Estado;
 import com.transporte.transportadora.service.EstadoService;
 import com.transporte.transportadora.service.impl.EstadoServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-
+@Lazy
+@Component
 public class EstadoDeleteUI extends JFrame {
 
     private JComboBox<Estado> cmbEstados;
     private JButton btnExcluir;
 
-    private EstadoService estadoService;
+    private final EstadoService estadoService;
 
-    public EstadoDeleteUI() {
-        estadoService = new EstadoServiceImpl();
+    public EstadoDeleteUI(EstadoService estadoService) {
+        this.estadoService = estadoService;
+        initUI();
+    }
+        private void initUI() {
         setTitle("Excluir Estado");
         setSize(300, 150);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -71,9 +77,5 @@ public class EstadoDeleteUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao excluir estado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        new EstadoDeleteUI();
     }
 }
