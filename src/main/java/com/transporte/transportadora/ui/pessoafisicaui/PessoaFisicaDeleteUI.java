@@ -3,13 +3,14 @@ package com.transporte.transportadora.ui.pessoafisicaui;
 import com.transporte.transportadora.model.PessoaFisica;
 import com.transporte.transportadora.repository.ClienteRepository;
 import com.transporte.transportadora.service.PessoaFisicaService;
-import com.transporte.transportadora.service.impl.PessoaFisicaServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
 @Lazy
 @Component
 public class PessoaFisicaDeleteUI extends JFrame {
@@ -17,17 +18,21 @@ public class PessoaFisicaDeleteUI extends JFrame {
     private final ClienteRepository clienteRepository;
     private JComboBox<String> cmbPessoasFisicas;
     private JButton btnDeletar;
+    private JButton btnVoltar;
 
     private final PessoaFisicaService pessoaFisicaService;
+    private final MainUI mainUI;
 
-    public PessoaFisicaDeleteUI(PessoaFisicaService pessoaFisicaService, ClienteRepository clienteRepository) {
+    public PessoaFisicaDeleteUI(PessoaFisicaService pessoaFisicaService, ClienteRepository clienteRepository, MainUI mainUI) {
         this.pessoaFisicaService = pessoaFisicaService;
+        this.mainUI = mainUI;
         initUI();
         this.clienteRepository = clienteRepository;
     }
+
     private void initUI() {
         setTitle("Deletar Pessoa Física");
-        setSize(400, 150);
+        setSize(400, 200);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
@@ -50,6 +55,12 @@ public class PessoaFisicaDeleteUI extends JFrame {
         add(btnDeletar, gbc);
 
         btnDeletar.addActionListener(e -> deletarPessoaFisica());
+
+        gbc.gridy++;
+        btnVoltar = new JButton("Voltar");
+        add(btnVoltar, gbc);
+
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -80,5 +91,10 @@ public class PessoaFisicaDeleteUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao deletar Pessoa Física: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true);
+        dispose();
     }
 }

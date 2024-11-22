@@ -9,9 +9,7 @@ import com.transporte.transportadora.repository.ClienteRepository;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.ClienteService;
 import com.transporte.transportadora.service.FreteService;
-import com.transporte.transportadora.service.impl.CidadeServiceImpl;
-import com.transporte.transportadora.service.impl.ClienteServiceImpl;
-import com.transporte.transportadora.service.impl.FreteServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -42,24 +40,28 @@ public class FreteCreateUI extends JFrame {
     private JComboBox<String>   cmbRemetente;
     private JComboBox<String> cmbDestinatario;
     private JButton btnSalvar;
+    private JButton btnVoltar;
 
     private final FreteService freteService;
     private final CidadeService cidadeService;
     private final ClienteService clienteService;
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final MainUI mainUI;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public FreteCreateUI(ClienteService clienteService, CidadeService cidadeService, final FreteService freteService, ClienteRepository clienteRepository, CidadeRepository cidadeRepository) {
+    public FreteCreateUI(ClienteService clienteService, CidadeService cidadeService, final FreteService freteService, ClienteRepository clienteRepository, CidadeRepository cidadeRepository, MainUI mainUI) {
         this.freteService = freteService;
         this.cidadeService = cidadeService;
         this.clienteService = clienteService;
+        this.mainUI = mainUI;
         initUI();
         this.clienteRepository = clienteRepository;
         this.cidadeRepository = cidadeRepository;
     }
+
     private void initUI() {
         setTitle("Cadastro de Frete");
         setSize(500, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -164,6 +166,13 @@ public class FreteCreateUI extends JFrame {
 
             btnSalvar.addActionListener(e -> salvarFrete());
 
+            // Botão Voltar
+            gbc.gridy++;
+            btnVoltar = new JButton("Voltar");
+            add(btnVoltar, gbc);
+
+            btnVoltar.addActionListener(e -> voltarParaMainUI());
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro ao configurar a formatação: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -172,9 +181,6 @@ public class FreteCreateUI extends JFrame {
         setVisible(true);
     }
 
-    /**
-     * Método para carregar a lista de cidades e preencher os JComboBox.
-     */
     private void carregarCidades() {
         try {
             List<Cidade> cidades = cidadeService.listarTodas();
@@ -187,9 +193,6 @@ public class FreteCreateUI extends JFrame {
         }
     }
 
-    /**
-     * Método para carregar a lista de clientes e preencher os JComboBox.
-     */
     private void carregarClientes() {
         try {
             List<Cliente> clientes = clienteService.listarTodos();
@@ -241,5 +244,10 @@ public class FreteCreateUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar o frete: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true); // Reexibe a MainUI
+        dispose(); // Fecha a tela atual
     }
 }

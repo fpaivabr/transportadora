@@ -4,15 +4,14 @@ import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.model.Estado;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.EstadoService;
-import com.transporte.transportadora.service.impl.CidadeServiceImpl;
-import com.transporte.transportadora.service.impl.EstadoServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.util.List;
+
 @Lazy
 @Component
 public class CidadeUpdateUI extends JFrame {
@@ -23,19 +22,22 @@ public class CidadeUpdateUI extends JFrame {
     private JFormattedTextField txtPrecoUnitPeso;
     private JFormattedTextField txtPrecoUnitValor;
     private JButton btnAtualizar;
+    private JButton btnVoltar;
 
     private final CidadeService cidadeService;
     private final EstadoService estadoService;
+    private final MainUI mainUI;
 
-    public CidadeUpdateUI(EstadoService estadoService, CidadeService cidadeService) {
+    public CidadeUpdateUI(CidadeService cidadeService, MainUI mainUI, EstadoService estadoService) {
         this.cidadeService = cidadeService;
         this.estadoService = estadoService;
+        this.mainUI = mainUI;
         initUI();
     }
 
     private void initUI() {
         setTitle("Atualizar Cidade");
-        setSize(500, 300);
+        setSize(400, 250);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
@@ -49,6 +51,7 @@ public class CidadeUpdateUI extends JFrame {
         gbc.gridx = 1;
         cmbCidades = new JComboBox<>();
         carregarCidades();
+        cmbCidades.addActionListener(e -> preencherCampos());
         add(cmbCidades, gbc);
 
         gbc.gridx = 0;
@@ -60,35 +63,16 @@ public class CidadeUpdateUI extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(new JLabel("Estado:"), gbc);
-        gbc.gridx = 1;
-        cmbEstado = new JComboBox<>();
-        carregarEstados();
-        add(cmbEstado, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(new JLabel("Preço por Peso:"), gbc);
-        gbc.gridx = 1;
-        NumberFormatter numberFormatter = new NumberFormatter();
-        numberFormatter.setAllowsInvalid(false);
-        txtPrecoUnitPeso = new JFormattedTextField(numberFormatter);
-        add(txtPrecoUnitPeso, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(new JLabel("Preço por Valor:"), gbc);
-        gbc.gridx = 1;
-        txtPrecoUnitValor = new JFormattedTextField(numberFormatter);
-        add(txtPrecoUnitValor, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
         gbc.gridwidth = 2;
         btnAtualizar = new JButton("Atualizar");
         add(btnAtualizar, gbc);
 
         btnAtualizar.addActionListener(e -> atualizarCidade());
+
+        gbc.gridy++;
+        btnVoltar = new JButton("Voltar");
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+        add(btnVoltar, gbc);
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -116,6 +100,13 @@ public class CidadeUpdateUI extends JFrame {
         }
     }
 
+    private void preencherCampos() {
+        Cidade cidade = (Cidade) cmbCidades.getSelectedItem();
+        if (cidade != null) {
+            txtNome.setText(cidade.getNome());
+        }
+    }
+
     private void atualizarCidade() {
         try {
             Cidade cidade = (Cidade) cmbCidades.getSelectedItem();
@@ -125,16 +116,19 @@ public class CidadeUpdateUI extends JFrame {
             }
 
             cidade.setNome(txtNome.getText());
-            cidade.setEstado((Estado) cmbEstado.getSelectedItem());
-            cidade.setPrecoUnitPeso(((Number) txtPrecoUnitPeso.getValue()).doubleValue());
-            cidade.setPrecoUnitValor(((Number) txtPrecoUnitValor.getValue()).doubleValue());
 
+            // Verificar o identificador correto (por exemplo: cidade.getId() ou cidade.getCodCidade())
             cidadeService.atualizarCidade(cidade.getId(), cidade);
+
             JOptionPane.showMessageDialog(this, "Cidade atualizada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar cidade: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-}
 
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true);
+        dispose();
+    }
+}

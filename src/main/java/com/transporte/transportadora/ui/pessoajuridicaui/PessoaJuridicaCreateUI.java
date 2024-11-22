@@ -2,12 +2,13 @@ package com.transporte.transportadora.ui.pessoajuridicaui;
 
 import com.transporte.transportadora.model.PessoaJuridica;
 import com.transporte.transportadora.service.PessoaJuridicaService;
-import com.transporte.transportadora.service.impl.PessoaJuridicaServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
+
 @Lazy
 @Component
 public class PessoaJuridicaCreateUI extends JFrame {
@@ -16,16 +17,20 @@ public class PessoaJuridicaCreateUI extends JFrame {
     private JTextField txtCnpj;
     private JTextField txtInscEstadual;
     private JButton btnSalvar;
+    private JButton btnVoltar;
 
     private final PessoaJuridicaService pessoaJuridicaService;
+    private final MainUI mainUI;
 
-    public PessoaJuridicaCreateUI(PessoaJuridicaService pessoaJuridicaService) {
+    public PessoaJuridicaCreateUI(PessoaJuridicaService pessoaJuridicaService, MainUI mainUI) {
         this.pessoaJuridicaService = pessoaJuridicaService;
+        this.mainUI = mainUI;
         initUI();
     }
+
     private void initUI() {
         setTitle("Criar Pessoa Jurídica");
-        setSize(400, 250);
+        setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
@@ -62,6 +67,12 @@ public class PessoaJuridicaCreateUI extends JFrame {
 
         btnSalvar.addActionListener(e -> salvarPessoaJuridica());
 
+        gbc.gridy++;
+        btnVoltar = new JButton("Voltar");
+        add(btnVoltar, gbc);
+
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -89,5 +100,10 @@ public class PessoaJuridicaCreateUI extends JFrame {
         txtRazaoSocial.setText("");
         txtCnpj.setText("");
         txtInscEstadual.setText("");
+    }
+
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true);
+        dispose();
     }
 }

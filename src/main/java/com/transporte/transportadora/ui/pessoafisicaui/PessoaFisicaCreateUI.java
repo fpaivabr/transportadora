@@ -2,12 +2,13 @@ package com.transporte.transportadora.ui.pessoafisicaui;
 
 import com.transporte.transportadora.model.PessoaFisica;
 import com.transporte.transportadora.service.PessoaFisicaService;
-import com.transporte.transportadora.service.impl.PessoaFisicaServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
+
 @Lazy
 @Component
 public class PessoaFisicaCreateUI extends JFrame {
@@ -15,16 +16,20 @@ public class PessoaFisicaCreateUI extends JFrame {
     private JTextField txtNome;
     private JTextField txtCpf;
     private JButton btnSalvar;
+    private JButton btnVoltar;
 
     private final PessoaFisicaService pessoaFisicaService;
+    private final MainUI mainUI;
 
-    public PessoaFisicaCreateUI(PessoaFisicaService pessoaFisicaService) {
+    public PessoaFisicaCreateUI(PessoaFisicaService pessoaFisicaService, MainUI mainUI) {
         this.pessoaFisicaService = pessoaFisicaService;
+        this.mainUI = mainUI;
         initUI();
     }
+
     private void initUI() {
         setTitle("Criar Pessoa Física");
-        setSize(400, 200);
+        setSize(400, 250);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
@@ -54,6 +59,12 @@ public class PessoaFisicaCreateUI extends JFrame {
 
         btnSalvar.addActionListener(e -> salvarPessoaFisica());
 
+        gbc.gridy++;
+        btnVoltar = new JButton("Voltar");
+        add(btnVoltar, gbc);
+
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -78,5 +89,10 @@ public class PessoaFisicaCreateUI extends JFrame {
     private void limparCampos() {
         txtNome.setText("");
         txtCpf.setText("");
+    }
+
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true);
+        dispose();
     }
 }

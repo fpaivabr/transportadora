@@ -5,7 +5,7 @@ import com.transporte.transportadora.model.PessoaFisica;
 import com.transporte.transportadora.model.PessoaJuridica;
 import com.transporte.transportadora.model.TipoCliente;
 import com.transporte.transportadora.service.ClienteService;
-import com.transporte.transportadora.service.impl.ClienteServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
 @Lazy
 @Component
 public class ClienteCreateUI extends JFrame {
@@ -27,18 +28,21 @@ public class ClienteCreateUI extends JFrame {
     private JTextField txtCnpj;
     private JTextField txtInscEstadual;
     private JButton btnSalvar;
+    private JButton btnVoltar;
 
     private final ClienteService clienteService;
+    private final MainUI mainUI;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public ClienteCreateUI(ClienteService clienteService) {
+    public ClienteCreateUI(ClienteService clienteService, MainUI mainUI) {
         this.clienteService = clienteService;
+        this.mainUI = mainUI;
         initUI();
     }
 
     private void initUI() {
         setTitle("Cadastrar Cliente");
-        setSize(400, 400);
+        setSize(400, 450);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
@@ -124,6 +128,12 @@ public class ClienteCreateUI extends JFrame {
         btnSalvar.addActionListener(e -> salvarCliente());
         add(btnSalvar, gbc);
 
+        // Botão Voltar
+        gbc.gridy++;
+        btnVoltar = new JButton("Voltar");
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+        add(btnVoltar, gbc);
+
         atualizarCamposEspecificos();
 
         setLocationRelativeTo(null);
@@ -178,5 +188,10 @@ public class ClienteCreateUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true); // Torna MainUI visível novamente
+        dispose(); // Fecha a janela atual
     }
 }

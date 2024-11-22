@@ -2,22 +2,26 @@ package com.transporte.transportadora.ui.cidadeui;
 
 import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.service.CidadeService;
-import com.transporte.transportadora.service.impl.CidadeServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
 @Lazy
 @Component
 public class CidadeReadUI extends JFrame {
 
     private JTable tabelaCidades;
+    private JButton btnVoltar;
     private final CidadeService cidadeService;
+    private final MainUI mainUI;
 
-    public CidadeReadUI(CidadeService cidadeService) {
+    public CidadeReadUI(CidadeService cidadeService, MainUI mainUI) {
         this.cidadeService = cidadeService;
+        this.mainUI = mainUI;
         initUI();
     }
 
@@ -34,6 +38,11 @@ public class CidadeReadUI extends JFrame {
         JScrollPane scrollPane = new JScrollPane(tabelaCidades);
 
         add(scrollPane, BorderLayout.CENTER);
+
+        // Botão Voltar
+        btnVoltar = new JButton("Voltar");
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+        add(btnVoltar, BorderLayout.SOUTH);
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -57,5 +66,9 @@ public class CidadeReadUI extends JFrame {
             return new String[0][0];
         }
     }
-}
 
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true); // Torna MainUI visível novamente
+        dispose(); // Fecha a janela atual
+    }
+}

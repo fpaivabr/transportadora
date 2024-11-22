@@ -3,7 +3,7 @@ package com.transporte.transportadora.ui.freteui;
 import com.transporte.transportadora.model.Frete;
 import com.transporte.transportadora.repository.FreteRepository;
 import com.transporte.transportadora.service.FreteService;
-import com.transporte.transportadora.service.impl.FreteServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -18,16 +18,19 @@ public class FreteDeleteUI extends JFrame {
     private final FreteRepository freteRepository;
     private JComboBox<String> cmbFretes;
     private JButton btnDeletar;
+    private JButton btnVoltar;
 
     private final FreteService freteService;
+    private final MainUI mainUI;
 
-    public FreteDeleteUI(FreteService freteService, FreteRepository freteRepository) {
+    public FreteDeleteUI(FreteService freteService, FreteRepository freteRepository, MainUI mainUI) {
         this.freteService = freteService;
+        this.mainUI = mainUI;
         initUI();
         this.freteRepository = freteRepository;
     }
-    private void initUI() {
 
+    private void initUI() {
         setTitle("Deletar Frete");
         setSize(400, 200);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -50,6 +53,12 @@ public class FreteDeleteUI extends JFrame {
         add(btnDeletar, gbc);
 
         btnDeletar.addActionListener(e -> deletarFrete());
+
+        gbc.gridy++;
+        btnVoltar = new JButton("Voltar");
+        add(btnVoltar, gbc);
+
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -84,5 +93,10 @@ public class FreteDeleteUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao deletar frete: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true); // Reexibe a MainUI
+        dispose(); // Fecha a tela atual
     }
 }

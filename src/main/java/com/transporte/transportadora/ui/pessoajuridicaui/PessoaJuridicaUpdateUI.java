@@ -2,13 +2,14 @@ package com.transporte.transportadora.ui.pessoajuridicaui;
 
 import com.transporte.transportadora.model.PessoaJuridica;
 import com.transporte.transportadora.service.PessoaJuridicaService;
-import com.transporte.transportadora.service.impl.PessoaJuridicaServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
 @Lazy
 @Component
 public class PessoaJuridicaUpdateUI extends JFrame {
@@ -18,16 +19,20 @@ public class PessoaJuridicaUpdateUI extends JFrame {
     private JTextField txtInscEstadual;
     private JTextField txtCnpj;
     private JButton btnAtualizar;
+    private JButton btnVoltar;
 
     private final PessoaJuridicaService pessoaJuridicaService;
+    private final MainUI mainUI;
 
-    public PessoaJuridicaUpdateUI(PessoaJuridicaService pessoaJuridicaService) {
+    public PessoaJuridicaUpdateUI(PessoaJuridicaService pessoaJuridicaService, MainUI mainUI) {
         this.pessoaJuridicaService = pessoaJuridicaService;
+        this.mainUI = mainUI;
         initUI();
     }
+
     private void initUI() {
         setTitle("Atualizar Pessoa Jurídica");
-        setSize(400, 300);
+        setSize(400, 350);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
@@ -73,6 +78,12 @@ public class PessoaJuridicaUpdateUI extends JFrame {
         btnAtualizar.addActionListener(e -> atualizarPessoaJuridica());
         cmbPessoasJuridicas.addActionListener(e -> preencherDadosPessoaJuridica());
 
+        gbc.gridy++;
+        btnVoltar = new JButton("Voltar");
+        add(btnVoltar, gbc);
+
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -80,6 +91,7 @@ public class PessoaJuridicaUpdateUI extends JFrame {
     private void carregarPessoasJuridicas() {
         try {
             List<PessoaJuridica> pessoasJuridicas = pessoaJuridicaService.listarTodos();
+            cmbPessoasJuridicas.removeAllItems();
             for (PessoaJuridica pessoa : pessoasJuridicas) {
                 cmbPessoasJuridicas.addItem(pessoa);
             }
@@ -119,5 +131,10 @@ public class PessoaJuridicaUpdateUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar Pessoa Jurídica: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true);
+        dispose();
     }
 }
