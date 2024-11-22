@@ -1,6 +1,7 @@
 package com.transporte.transportadora.ui.estadoui;
 
 import com.transporte.transportadora.model.Estado;
+import com.transporte.transportadora.repository.EstadoRepository;
 import com.transporte.transportadora.service.EstadoService;
 import com.transporte.transportadora.service.impl.EstadoServiceImpl;
 import org.springframework.context.annotation.Lazy;
@@ -13,13 +14,15 @@ import java.util.List;
 @Component
 public class EstadoDeleteUI extends JFrame {
 
-    private JComboBox<Estado> cmbEstados;
+    private JComboBox<String> cmbEstados;
     private JButton btnExcluir;
 
     private final EstadoService estadoService;
+    private final EstadoRepository estadoRepository;
 
-    public EstadoDeleteUI(EstadoService estadoService) {
+    public EstadoDeleteUI(EstadoService estadoService, EstadoRepository estadoRepository) {
         this.estadoService = estadoService;
+        this.estadoRepository = estadoRepository;
         initUI();
     }
         private void initUI() {
@@ -56,7 +59,7 @@ public class EstadoDeleteUI extends JFrame {
         try {
             List<Estado> estados = estadoService.listarTodos();
             for (Estado estado : estados) {
-                cmbEstados.addItem(estado);
+                cmbEstados.addItem(estado.getNome());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar estados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -65,15 +68,17 @@ public class EstadoDeleteUI extends JFrame {
 
     private void excluirEstado() {
         try {
-            Estado estado = (Estado) cmbEstados.getSelectedItem();
-            if (estado == null) {
-                JOptionPane.showMessageDialog(this, "Selecione um estado.", "Erro", JOptionPane.ERROR_MESSAGE);
-                return;
+            if(cmbEstados.getSelectedItem() != null) {
+                Estado estado = estadoRepository.findByNome(cmbEstados.getSelectedItem().toString()).orElse(null);
+                if (estado == null) {
+                    JOptionPane.showMessageDialog(this, "Selecione um estado.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                estadoService.deletarEstado(estado.getId());
+                JOptionPane.showMessageDialog(this, "Estado excluído com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                carregarEstados();
             }
-
-            estadoService.deletarEstado(estado.getId());
-            JOptionPane.showMessageDialog(this, "Estado excluído com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            carregarEstados();
+            JOptionPane.showMessageDialog(this, "Selecione um estado.", "Erro", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao excluir estado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }

@@ -3,6 +3,9 @@ package com.transporte.transportadora.ui.freteui;
 import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.model.Cliente;
 import com.transporte.transportadora.model.Frete;
+import com.transporte.transportadora.model.TipoCliente;
+import com.transporte.transportadora.repository.CidadeRepository;
+import com.transporte.transportadora.repository.ClienteRepository;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.ClienteService;
 import com.transporte.transportadora.service.FreteService;
@@ -27,15 +30,17 @@ import java.util.Locale;
 @Component
 public class FreteCreateUI extends JFrame {
 
+    private final ClienteRepository clienteRepository;
+    private final CidadeRepository cidadeRepository;
     private JFormattedTextField txtDataFrete;
     private JFormattedTextField txtPeso;
     private JFormattedTextField txtValor;
     private JFormattedTextField txtIcms;
     private JFormattedTextField txtPedagio;
-    private JComboBox<Cidade> cmbOrigem;
-    private JComboBox<Cidade> cmbDestino;
-    private JComboBox<Cliente> cmbRemetente;
-    private JComboBox<Cliente> cmbDestinatario;
+    private JComboBox<String> cmbOrigem;
+    private JComboBox<String> cmbDestino;
+    private JComboBox<String>   cmbRemetente;
+    private JComboBox<String> cmbDestinatario;
     private JButton btnSalvar;
 
     private final FreteService freteService;
@@ -43,11 +48,13 @@ public class FreteCreateUI extends JFrame {
     private final ClienteService clienteService;
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public FreteCreateUI(ClienteService clienteService, CidadeService cidadeService, final FreteService freteService) {
+    public FreteCreateUI(ClienteService clienteService, CidadeService cidadeService, final FreteService freteService, ClienteRepository clienteRepository, CidadeRepository cidadeRepository) {
         this.freteService = freteService;
         this.cidadeService = cidadeService;
         this.clienteService = clienteService;
         initUI();
+        this.clienteRepository = clienteRepository;
+        this.cidadeRepository = cidadeRepository;
     }
     private void initUI() {
         setTitle("Cadastro de Frete");
@@ -172,8 +179,8 @@ public class FreteCreateUI extends JFrame {
         try {
             List<Cidade> cidades = cidadeService.listarTodas();
             for (Cidade cidade : cidades) {
-                cmbOrigem.addItem(cidade);
-                cmbDestino.addItem(cidade);
+                cmbOrigem.addItem(cidade.getNome());
+                cmbDestino.addItem(cidade.getNome());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar cidades: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -187,8 +194,13 @@ public class FreteCreateUI extends JFrame {
         try {
             List<Cliente> clientes = clienteService.listarTodos();
             for (Cliente cliente : clientes) {
-                cmbRemetente.addItem(cliente);
-                cmbDestinatario.addItem(cliente);
+                if(cliente.getTipoCliente().equals(TipoCliente.PESSOA_FISICA)){
+                    cmbRemetente.addItem(cliente.getPessoaFisica().getCpf());
+                    cmbDestinatario.addItem(cliente.getPessoaFisica().getCpf());
+                }else{
+                    cmbRemetente.addItem(cliente.getPessoaJuridica().getCnpj());
+                    cmbDestinatario.addItem(cliente.getPessoaJuridica().getCnpj());
+                }
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar clientes: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -203,11 +215,15 @@ public class FreteCreateUI extends JFrame {
             double icms = ((Number) txtIcms.getValue()).doubleValue();
             double pedagio = ((Number) txtPedagio.getValue()).doubleValue();
 
-            Cidade origem = (Cidade) cmbOrigem.getSelectedItem();
-            Cidade destino = (Cidade) cmbDestino.getSelectedItem();
-            Cliente remetente = (Cliente) cmbRemetente.getSelectedItem();
-            Cliente destinatario = (Cliente) cmbDestinatario.getSelectedItem();
+            Cidade origem = cidadeRepository.findByNome(cmbOrigem.getSelectedItem().toString()).orElse(null);
+            Cidade destino = cidadeRepository.findByNome(cmbDestino.getSelectedItem().toString()).orElse(null);
+            Cliente remetente = clienteRepository.findByDocumento(cmbRemetente.getSelectedItem().toString()).orElse(null);
+            Cliente destinatario = clienteRepository.findByDocumento(cmbDestinatario.getSelectedItem().toString()).orElse(null);
 
+            if(origem == null || destino == null || remetente == null || destinatario == null){
+                JOptionPane.showMessageDialog(this, "Erro ao salvar o frete, informacoes nao correspondem com a do banco de dados ");
+                return;
+            }
             Frete frete = new Frete();
             frete.setDataFrete(dataFrete);
             frete.setPeso(peso);

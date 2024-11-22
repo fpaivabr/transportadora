@@ -1,6 +1,7 @@
 package com.transporte.transportadora.ui.cidadeui;
 
 import com.transporte.transportadora.model.Cidade;
+import com.transporte.transportadora.repository.CidadeRepository;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.impl.CidadeServiceImpl;
 import org.springframework.context.annotation.Lazy;
@@ -13,14 +14,16 @@ import java.util.List;
 @Component
 public class CidadeDeleteUI extends JFrame {
 
-    private JComboBox<Cidade> cmbCidades;
+    private final CidadeRepository cidadeRepository;
+    private JComboBox<String> cmbCidades;
     private JButton btnDeletar;
 
     private final CidadeService cidadeService;
 
-    public CidadeDeleteUI(CidadeService cidadeService) {
+    public CidadeDeleteUI(CidadeService cidadeService, CidadeRepository cidadeRepository) {
         this.cidadeService = cidadeService;
         initUI();
+        this.cidadeRepository = cidadeRepository;
     }
 
     private void initUI() {
@@ -57,7 +60,7 @@ public class CidadeDeleteUI extends JFrame {
         try {
             List<Cidade> cidades = cidadeService.listarTodas();
             for (Cidade cidade : cidades) {
-                cmbCidades.addItem(cidade);
+                cmbCidades.addItem(cidade.getNome());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar cidades: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -66,7 +69,11 @@ public class CidadeDeleteUI extends JFrame {
 
     private void deletarCidade() {
         try {
-            Cidade cidade = (Cidade) cmbCidades.getSelectedItem();
+            if (cmbCidades.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this, "Selecione uma cidade.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Cidade cidade = cidadeRepository.findByNome(cmbCidades.getSelectedItem().toString()).orElse(null);
             if (cidade == null) {
                 JOptionPane.showMessageDialog(this, "Selecione uma cidade.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;

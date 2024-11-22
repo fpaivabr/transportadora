@@ -1,6 +1,7 @@
 package com.transporte.transportadora.ui.pessoafisicaui;
 
 import com.transporte.transportadora.model.PessoaFisica;
+import com.transporte.transportadora.repository.ClienteRepository;
 import com.transporte.transportadora.service.PessoaFisicaService;
 import com.transporte.transportadora.service.impl.PessoaFisicaServiceImpl;
 import org.springframework.context.annotation.Lazy;
@@ -13,14 +14,16 @@ import java.util.List;
 @Component
 public class PessoaFisicaDeleteUI extends JFrame {
 
-    private JComboBox<PessoaFisica> cmbPessoasFisicas;
+    private final ClienteRepository clienteRepository;
+    private JComboBox<String> cmbPessoasFisicas;
     private JButton btnDeletar;
 
     private final PessoaFisicaService pessoaFisicaService;
 
-    public PessoaFisicaDeleteUI(PessoaFisicaService pessoaFisicaService) {
+    public PessoaFisicaDeleteUI(PessoaFisicaService pessoaFisicaService, ClienteRepository clienteRepository) {
         this.pessoaFisicaService = pessoaFisicaService;
         initUI();
+        this.clienteRepository = clienteRepository;
     }
     private void initUI() {
         setTitle("Deletar Pessoa Física");
@@ -56,7 +59,7 @@ public class PessoaFisicaDeleteUI extends JFrame {
         try {
             List<PessoaFisica> pessoasFisicas = pessoaFisicaService.listarTodos();
             for (PessoaFisica pessoa : pessoasFisicas) {
-                cmbPessoasFisicas.addItem(pessoa);
+                cmbPessoasFisicas.addItem(pessoa.getCpf());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar Pessoas Físicas: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -65,7 +68,7 @@ public class PessoaFisicaDeleteUI extends JFrame {
 
     private void deletarPessoaFisica() {
         try {
-            PessoaFisica pessoaSelecionada = (PessoaFisica) cmbPessoasFisicas.getSelectedItem();
+            PessoaFisica pessoaSelecionada = clienteRepository.findByDocumento(cmbPessoasFisicas.getSelectedItem().toString()).orElse(null).getPessoaFisica();
             if (pessoaSelecionada == null) {
                 JOptionPane.showMessageDialog(this, "Selecione uma Pessoa Física.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;

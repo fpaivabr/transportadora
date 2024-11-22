@@ -3,6 +3,8 @@ package com.transporte.transportadora.ui.freteui;
 import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.model.Cliente;
 import com.transporte.transportadora.model.Frete;
+import com.transporte.transportadora.model.TipoCliente;
+import com.transporte.transportadora.repository.FreteRepository;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.ClienteService;
 import com.transporte.transportadora.service.FreteService;
@@ -26,11 +28,12 @@ import java.util.Locale;
 @Component
 public class FreteUpdateUI extends JFrame {
 
-    private JComboBox<Cliente> cmbRemetente;
-    private JComboBox<Cliente> cmbDestinatario;
-    private JComboBox<Cidade> cmbOrigem;
-    private JComboBox<Cidade> cmbDestino;
-    private JComboBox<Frete> cmbFretes;
+    private final FreteRepository freteRepository;
+    private JComboBox<String> cmbRemetente;
+    private JComboBox<String> cmbDestinatario;
+    private JComboBox<String> cmbOrigem;
+    private JComboBox<String> cmbDestino;
+    private JComboBox<String> cmbFretes;
     private JFormattedTextField txtDataFrete;
     private JFormattedTextField txtPeso;
     private JFormattedTextField txtValor;
@@ -44,11 +47,12 @@ public class FreteUpdateUI extends JFrame {
     private final ClienteService clienteService;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public FreteUpdateUI(ClienteService clienteService, CidadeService cidadeService, FreteService freteService) {
+    public FreteUpdateUI(ClienteService clienteService, CidadeService cidadeService, FreteService freteService, FreteRepository freteRepository) {
         this.freteService = freteService;
         this.cidadeService = cidadeService;
         this.clienteService = clienteService;
         initUI();
+        this.freteRepository = freteRepository;
     }
 
     private void initUI() {
@@ -165,8 +169,13 @@ public class FreteUpdateUI extends JFrame {
             cmbRemetente.removeAllItems();
             cmbDestinatario.removeAllItems();
             for (Cliente cliente : clientes) {
-                cmbRemetente.addItem(cliente);
-                cmbDestinatario.addItem(cliente);
+                if(cliente.getTipoCliente().equals(TipoCliente.PESSOA_FISICA)){
+                    cmbRemetente.addItem(cliente.getPessoaFisica().getCpf());
+                    cmbDestinatario.addItem(cliente.getPessoaFisica().getCpf());
+                }else{
+                    cmbRemetente.addItem(cliente.getPessoaJuridica().getCnpj());
+                    cmbDestinatario.addItem(cliente.getPessoaJuridica().getCnpj());
+                }
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar clientes: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -179,8 +188,8 @@ public class FreteUpdateUI extends JFrame {
             cmbOrigem.removeAllItems();
             cmbDestino.removeAllItems();
             for (Cidade cidade : cidades) {
-                cmbOrigem.addItem(cidade);
-                cmbDestino.addItem(cidade);
+                cmbOrigem.addItem(cidade.getNome());
+                cmbDestino.addItem(cidade.getNome());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar cidades: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -202,7 +211,7 @@ public class FreteUpdateUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Nenhum frete encontrado para o remetente selecionado.", "Informação", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 for (Frete frete : fretes) {
-                    cmbFretes.addItem(frete);
+                    cmbFretes.addItem(frete.getNumConhec().toString());
                 }
             }
 
@@ -212,7 +221,7 @@ public class FreteUpdateUI extends JFrame {
     }
 
     private void preencherDadosFrete() {
-        Frete frete = (Frete) cmbFretes.getSelectedItem();
+        Frete frete = freteRepository.findByNumConhec(Long.valueOf(cmbFretes.getSelectedItem().toString())).orElse(null);
         if (frete != null) {
             txtDataFrete.setText(frete.getDataFrete().format(dateFormatter));
             txtPeso.setValue(frete.getPeso());

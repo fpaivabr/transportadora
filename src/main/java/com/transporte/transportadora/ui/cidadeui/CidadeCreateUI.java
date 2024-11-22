@@ -2,6 +2,7 @@ package com.transporte.transportadora.ui.cidadeui;
 
 import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.model.Estado;
+import com.transporte.transportadora.repository.EstadoRepository;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.EstadoService;
 import com.transporte.transportadora.service.impl.CidadeServiceImpl;
@@ -18,8 +19,9 @@ import java.util.List;
 @Component
 public class CidadeCreateUI extends JFrame {
 
+    private final EstadoRepository estadoRepository;
     private JTextField txtNome;
-    private JComboBox<Estado> cmbEstado;
+    private JComboBox<String> cmbEstado;
     private JFormattedTextField txtPrecoUnitPeso;
     private JFormattedTextField txtPrecoUnitValor;
     private JButton btnSalvar;
@@ -29,11 +31,12 @@ public class CidadeCreateUI extends JFrame {
     private final MainUI mainUI;
     private final EstadoService estadoService;
 
-    public CidadeCreateUI(EstadoService estadoService, CidadeService cidadeService, MainUI mainUI) {
+    public CidadeCreateUI(EstadoService estadoService, CidadeService cidadeService, MainUI mainUI, EstadoRepository estadoRepository) {
         this.cidadeService = cidadeService;
         this.estadoService = estadoService;
         this.mainUI = mainUI;
         initUI();
+        this.estadoRepository = estadoRepository;
     }
         private void initUI() {
             setTitle("Cadastro de Cidade");
@@ -98,7 +101,7 @@ public class CidadeCreateUI extends JFrame {
         try {
             List<Estado> estados = estadoService.listarTodos();
             for (Estado estado : estados) {
-                cmbEstado.addItem(estado);
+                cmbEstado.addItem(estado.getNome());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar estados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -108,7 +111,12 @@ public class CidadeCreateUI extends JFrame {
     private void salvarCidade() {
         try {
             String nome = txtNome.getText();
-            Estado estado = (Estado) cmbEstado.getSelectedItem();
+            Estado estado = estadoRepository.findByNome(cmbEstado.getSelectedItem().toString()).orElse(null);
+            if(estado == null){
+                JOptionPane.showMessageDialog(this, "Erro ao salvar cidade, o Estado nao pode ser nulo ");
+                return;
+            }
+
             Double precoPeso = ((Number) txtPrecoUnitPeso.getValue()).doubleValue();
             Double precoValor = ((Number) txtPrecoUnitValor.getValue()).doubleValue();
 

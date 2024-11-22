@@ -1,6 +1,7 @@
 package com.transporte.transportadora.ui.estadoui;
 
 import com.transporte.transportadora.model.Estado;
+import com.transporte.transportadora.repository.EstadoRepository;
 import com.transporte.transportadora.service.EstadoService;
 import com.transporte.transportadora.service.impl.EstadoServiceImpl;
 import org.springframework.context.annotation.Lazy;
@@ -15,7 +16,8 @@ import java.util.List;
 @Component
 public class EstadoUpdateUI extends JFrame {
 
-    private JComboBox<Estado> cmbEstados;
+    private final EstadoRepository estadoRepository;
+    private JComboBox<String> cmbEstados;
     private JTextField txtNome;
     private JFormattedTextField txtIcmsLocal;
     private JFormattedTextField txtIcmsOutroUf;
@@ -23,9 +25,10 @@ public class EstadoUpdateUI extends JFrame {
 
     private final EstadoService estadoService;
 
-    public EstadoUpdateUI(EstadoService estadoService) {
+    public EstadoUpdateUI(EstadoService estadoService, EstadoRepository estadoRepository) {
         this.estadoService = estadoService;
         initUI();
+        this.estadoRepository = estadoRepository;
     }
     private void initUI() {
         setTitle("Atualizar Estado");
@@ -84,7 +87,7 @@ public class EstadoUpdateUI extends JFrame {
         try {
             List<Estado> estados = estadoService.listarTodos();
             for (Estado estado : estados) {
-                cmbEstados.addItem(estado);
+                cmbEstados.addItem(estado.getNome());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar estados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -93,7 +96,11 @@ public class EstadoUpdateUI extends JFrame {
 
     private void atualizarEstado() {
         try {
-            Estado estado = (Estado) cmbEstados.getSelectedItem();
+            if (cmbEstados.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this, "Selecione um estado.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Estado estado = estadoRepository.findByNome(cmbEstados.getSelectedItem().toString()).orElse(null);
             if (estado == null) {
                 JOptionPane.showMessageDialog(this, "Selecione um estado.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;

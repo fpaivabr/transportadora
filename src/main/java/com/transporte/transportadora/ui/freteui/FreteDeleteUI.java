@@ -15,14 +15,16 @@ import java.util.List;
 @Component
 public class FreteDeleteUI extends JFrame {
 
-    private JComboBox<Frete> cmbFretes;
+    private final FreteRepository freteRepository;
+    private JComboBox<String> cmbFretes;
     private JButton btnDeletar;
 
     private final FreteService freteService;
 
-    public FreteDeleteUI(FreteService freteService) {
+    public FreteDeleteUI(FreteService freteService, FreteRepository freteRepository) {
         this.freteService = freteService;
         initUI();
+        this.freteRepository = freteRepository;
     }
     private void initUI() {
 
@@ -57,7 +59,7 @@ public class FreteDeleteUI extends JFrame {
         try {
             List<Frete> fretes = freteService.listarTodos();
             for (Frete frete : fretes) {
-                cmbFretes.addItem(frete);
+                cmbFretes.addItem(frete.getNumConhec().toString());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar fretes: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -66,7 +68,7 @@ public class FreteDeleteUI extends JFrame {
 
     private void deletarFrete() {
         try {
-            Frete frete = (Frete) cmbFretes.getSelectedItem();
+            Frete frete = freteRepository.findByNumConhec(Long.valueOf(cmbFretes.getSelectedItem().toString())).orElse(null);
             if (frete == null) {
                 JOptionPane.showMessageDialog(this, "Selecione um frete para deletar.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;

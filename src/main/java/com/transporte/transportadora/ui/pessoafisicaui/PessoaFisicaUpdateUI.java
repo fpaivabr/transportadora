@@ -1,6 +1,7 @@
 package com.transporte.transportadora.ui.pessoafisicaui;
 
 import com.transporte.transportadora.model.PessoaFisica;
+import com.transporte.transportadora.repository.ClienteRepository;
 import com.transporte.transportadora.service.PessoaFisicaService;
 import com.transporte.transportadora.service.impl.PessoaFisicaServiceImpl;
 import org.springframework.context.annotation.Lazy;
@@ -13,16 +14,18 @@ import java.util.List;
 @Component
 public class PessoaFisicaUpdateUI extends JFrame {
 
-    private JComboBox<PessoaFisica> cmbPessoasFisicas;
+    private final ClienteRepository clienteRepository;
+    private JComboBox<String> cmbPessoasFisicas;
     private JTextField txtNome;
     private JTextField txtCpf;
     private JButton btnAtualizar;
 
     private final PessoaFisicaService pessoaFisicaService;
 
-    public PessoaFisicaUpdateUI(PessoaFisicaService pessoaFisicaService) {
+    public PessoaFisicaUpdateUI(PessoaFisicaService pessoaFisicaService, ClienteRepository clienteRepository) {
         this.pessoaFisicaService = pessoaFisicaService;
         initUI();
+        this.clienteRepository = clienteRepository;
     }
     private void initUI() {
         setTitle("Atualizar Pessoa Física");
@@ -73,7 +76,7 @@ public class PessoaFisicaUpdateUI extends JFrame {
         try {
             List<PessoaFisica> pessoasFisicas = pessoaFisicaService.listarTodos();
             for (PessoaFisica pessoa : pessoasFisicas) {
-                cmbPessoasFisicas.addItem(pessoa);
+                cmbPessoasFisicas.addItem(pessoa.getCpf());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar Pessoas Físicas: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -81,7 +84,7 @@ public class PessoaFisicaUpdateUI extends JFrame {
     }
 
     private void preencherDadosPessoaFisica() {
-        PessoaFisica pessoaSelecionada = (PessoaFisica) cmbPessoasFisicas.getSelectedItem();
+        PessoaFisica pessoaSelecionada =  clienteRepository.findByDocumento(cmbPessoasFisicas.getSelectedItem().toString()).orElse(null).getPessoaFisica();
         if (pessoaSelecionada != null) {
             txtNome.setText(pessoaSelecionada.getNomeCli());
             txtCpf.setText(pessoaSelecionada.getCpf());

@@ -17,9 +17,9 @@ import java.util.List;
 @Component
 public class CidadeUpdateUI extends JFrame {
 
-    private JComboBox<Cidade> cmbCidades;
+    private JComboBox<String> cmbCidades;
     private JTextField txtNome;
-    private JComboBox<Estado> cmbEstado;
+    private JComboBox<String> cmbEstado;
     private JFormattedTextField txtPrecoUnitPeso;
     private JFormattedTextField txtPrecoUnitValor;
     private JButton btnAtualizar;
@@ -98,7 +98,7 @@ public class CidadeUpdateUI extends JFrame {
         try {
             List<Cidade> cidades = cidadeService.listarTodas();
             for (Cidade cidade : cidades) {
-                cmbCidades.addItem(cidade);
+                cmbCidades.addItem(cidade.getNome());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar cidades: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -109,7 +109,7 @@ public class CidadeUpdateUI extends JFrame {
         try {
             List<Estado> estados = estadoService.listarTodos();
             for (Estado estado : estados) {
-                cmbEstado.addItem(estado);
+                cmbEstado.addItem(estado.getNome());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar estados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
