@@ -2,6 +2,7 @@ package com.transporte.transportadora.ui.estadoui;
 
 import com.transporte.transportadora.model.Estado;
 import com.transporte.transportadora.service.EstadoService;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,7 @@ import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.text.DecimalFormat;
+
 @Lazy
 @Component
 public class EstadoCreateUI extends JFrame {
@@ -17,14 +19,17 @@ public class EstadoCreateUI extends JFrame {
     private JFormattedTextField txtIcmsLocal;
     private JFormattedTextField txtIcmsOutroUf;
     private JButton btnSalvar;
-
+    private JButton btnVoltar;
 
     private final EstadoService estadoService;
+    private final MainUI mainUI;
 
-    public EstadoCreateUI(EstadoService estadoService) {
+    public EstadoCreateUI(EstadoService estadoService, MainUI mainUI) {
         this.estadoService = estadoService;
+        this.mainUI = mainUI;
         initUI();
     }
+
     private void initUI() {
         setTitle("Cadastro de Estado");
         setSize(400, 300);
@@ -66,6 +71,11 @@ public class EstadoCreateUI extends JFrame {
 
         btnSalvar.addActionListener(e -> salvarEstado());
 
+        gbc.gridy++;
+        btnVoltar = new JButton("Voltar");
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+        add(btnVoltar, gbc);
+
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -93,5 +103,10 @@ public class EstadoCreateUI extends JFrame {
         txtNome.setText("");
         txtIcmsLocal.setValue(null);
         txtIcmsOutroUf.setValue(null);
+    }
+
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true);
+        dispose();
     }
 }

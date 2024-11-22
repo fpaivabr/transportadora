@@ -6,9 +6,7 @@ import com.transporte.transportadora.model.Frete;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.ClienteService;
 import com.transporte.transportadora.service.FreteService;
-import com.transporte.transportadora.service.impl.CidadeServiceImpl;
-import com.transporte.transportadora.service.impl.ClienteServiceImpl;
-import com.transporte.transportadora.service.impl.FreteServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -26,34 +24,36 @@ import java.util.Locale;
 @Component
 public class FreteUpdateUI extends JFrame {
 
-    private JComboBox<Cliente> cmbRemetente;
-    private JComboBox<Cliente> cmbDestinatario;
-    private JComboBox<Cidade> cmbOrigem;
-    private JComboBox<Cidade> cmbDestino;
     private JComboBox<Frete> cmbFretes;
     private JFormattedTextField txtDataFrete;
     private JFormattedTextField txtPeso;
     private JFormattedTextField txtValor;
     private JFormattedTextField txtIcms;
     private JFormattedTextField txtPedagio;
-    private JButton btnBuscar;
+    private JComboBox<Cidade> cmbOrigem;
+    private JComboBox<Cidade> cmbDestino;
+    private JComboBox<Cliente> cmbRemetente;
+    private JComboBox<Cliente> cmbDestinatario;
     private JButton btnAtualizar;
+    private JButton btnVoltar;
 
     private final FreteService freteService;
     private final CidadeService cidadeService;
     private final ClienteService clienteService;
+    private final MainUI mainUI;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public FreteUpdateUI(ClienteService clienteService, CidadeService cidadeService, FreteService freteService) {
+    public FreteUpdateUI(ClienteService clienteService, CidadeService cidadeService, FreteService freteService, MainUI mainUI) {
         this.freteService = freteService;
         this.cidadeService = cidadeService;
         this.clienteService = clienteService;
+        this.mainUI = mainUI;
         initUI();
     }
 
     private void initUI() {
         setTitle("Atualizar Frete");
-        setSize(500, 700);
+        setSize(600, 800);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
@@ -63,121 +63,122 @@ public class FreteUpdateUI extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        // Seleção de Cliente Remetente
-        gbc.gridwidth = 2;
-        add(new JLabel("Selecione o Remetente do Frete:"), gbc);
-        gbc.gridy++;
-        cmbRemetente = new JComboBox<>();
-        carregarClientes();
-        add(cmbRemetente, gbc);
-
-        // Botão de buscar fretes
-        gbc.gridy++;
-        btnBuscar = new JButton("Buscar Fretes");
-        add(btnBuscar, gbc);
-
         // Seleção de Frete
-        gbc.gridy++;
         add(new JLabel("Selecione o Frete:"), gbc);
-        gbc.gridy++;
+        gbc.gridx = 1;
         cmbFretes = new JComboBox<>();
+        carregarFretes();
         add(cmbFretes, gbc);
 
-        // Configuração dos campos de entrada
-        gbc.gridwidth = 1;
+        // Campos de atualização
+        gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Data do Frete:"), gbc);
-        gbc.gridy++;
+        gbc.gridx = 1;
         txtDataFrete = new JFormattedTextField(new DecimalFormat("##/##/####"));
         add(txtDataFrete, gbc);
 
+        gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Peso (kg):"), gbc);
-        gbc.gridy++;
+        gbc.gridx = 1;
         NumberFormat pesoFormat = DecimalFormat.getInstance(new Locale("pt", "BR"));
         pesoFormat.setMinimumFractionDigits(2);
         pesoFormat.setMaximumFractionDigits(2);
         NumberFormatter pesoFormatter = new NumberFormatter(pesoFormat);
         pesoFormatter.setAllowsInvalid(false);
-        pesoFormatter.setOverwriteMode(true);
         txtPeso = new JFormattedTextField(pesoFormatter);
         add(txtPeso, gbc);
 
+        gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Valor (R$):"), gbc);
-        gbc.gridy++;
+        gbc.gridx = 1;
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
         NumberFormatter currencyFormatter = new NumberFormatter(currencyFormat);
         currencyFormatter.setAllowsInvalid(false);
-        currencyFormatter.setOverwriteMode(true);
         txtValor = new JFormattedTextField(currencyFormatter);
         add(txtValor, gbc);
 
+        gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("ICMS (R$):"), gbc);
-        gbc.gridy++;
+        gbc.gridx = 1;
         txtIcms = new JFormattedTextField(currencyFormatter);
         add(txtIcms, gbc);
 
+        gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Pedágio (R$):"), gbc);
-        gbc.gridy++;
+        gbc.gridx = 1;
         txtPedagio = new JFormattedTextField(currencyFormatter);
         add(txtPedagio, gbc);
 
-        // Campos de seleção de cidade de origem e destino
+        gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Cidade de Origem:"), gbc);
-        gbc.gridy++;
+        gbc.gridx = 1;
         cmbOrigem = new JComboBox<>();
         carregarCidades();
         add(cmbOrigem, gbc);
 
+        gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Cidade de Destino:"), gbc);
-        gbc.gridy++;
+        gbc.gridx = 1;
         cmbDestino = new JComboBox<>();
+        carregarCidades();
         add(cmbDestino, gbc);
 
+        gbc.gridx = 0;
         gbc.gridy++;
-        add(new JLabel("Destinatário:"), gbc);
+        add(new JLabel("Cliente Remetente:"), gbc);
+        gbc.gridx = 1;
+        cmbRemetente = new JComboBox<>();
+        carregarClientes();
+        add(cmbRemetente, gbc);
+
+        gbc.gridx = 0;
         gbc.gridy++;
+        add(new JLabel("Cliente Destinatário:"), gbc);
+        gbc.gridx = 1;
         cmbDestinatario = new JComboBox<>();
         carregarClientes();
         add(cmbDestinatario, gbc);
 
+        // Botões
+        gbc.gridx = 0;
         gbc.gridy++;
-        btnAtualizar = new JButton("Atualizar Frete");
+        gbc.gridwidth = 2;
+        btnAtualizar = new JButton("Atualizar");
         add(btnAtualizar, gbc);
-
-        // Eventos
-        btnBuscar.addActionListener(e -> buscarFretes());
-        cmbFretes.addActionListener(e -> preencherDadosFrete());
         btnAtualizar.addActionListener(e -> atualizarFrete());
+
+        gbc.gridy++;
+        btnVoltar = new JButton("Voltar");
+        add(btnVoltar, gbc);
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+
+        cmbFretes.addActionListener(e -> preencherDadosFrete());
 
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    private void carregarClientes() {
+    private void carregarFretes() {
         try {
-            List<Cliente> clientes = clienteService.listarTodos();
-            cmbRemetente.removeAllItems();
-            cmbDestinatario.removeAllItems();
-            for (Cliente cliente : clientes) {
-                cmbRemetente.addItem(cliente);
-                cmbDestinatario.addItem(cliente);
+            List<Frete> fretes = freteService.listarTodos();
+            for (Frete frete : fretes) {
+                cmbFretes.addItem(frete);
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar clientes: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao carregar fretes: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void carregarCidades() {
         try {
             List<Cidade> cidades = cidadeService.listarTodas();
-            cmbOrigem.removeAllItems();
-            cmbDestino.removeAllItems();
             for (Cidade cidade : cidades) {
                 cmbOrigem.addItem(cidade);
                 cmbDestino.addItem(cidade);
@@ -187,27 +188,15 @@ public class FreteUpdateUI extends JFrame {
         }
     }
 
-    private void buscarFretes() {
+    private void carregarClientes() {
         try {
-            Cliente remetente = (Cliente) cmbRemetente.getSelectedItem();
-            if (remetente == null) {
-                JOptionPane.showMessageDialog(this, "Selecione um remetente.", "Erro", JOptionPane.ERROR_MESSAGE);
-                return;
+            List<Cliente> clientes = clienteService.listarTodos();
+            for (Cliente cliente : clientes) {
+                cmbRemetente.addItem(cliente);
+                cmbDestinatario.addItem(cliente);
             }
-
-            List<Frete> fretes = freteService.buscarFretesPorRemetente(remetente);
-            cmbFretes.removeAllItems();
-
-            if (fretes.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Nenhum frete encontrado para o remetente selecionado.", "Informação", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                for (Frete frete : fretes) {
-                    cmbFretes.addItem(frete);
-                }
-            }
-
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao buscar fretes: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao carregar clientes: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -261,5 +250,9 @@ public class FreteUpdateUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar frete: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-}
 
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true);
+        dispose();
+    }
+}

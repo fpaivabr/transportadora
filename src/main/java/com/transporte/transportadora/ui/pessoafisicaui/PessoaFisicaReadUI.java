@@ -2,27 +2,33 @@ package com.transporte.transportadora.ui.pessoafisicaui;
 
 import com.transporte.transportadora.model.PessoaFisica;
 import com.transporte.transportadora.service.PessoaFisicaService;
-import com.transporte.transportadora.service.impl.PessoaFisicaServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
 @Lazy
 @Component
 public class PessoaFisicaReadUI extends JFrame {
 
     private JTable tabelaPessoasFisicas;
-    private final PessoaFisicaService pessoaFisicaService;
+    private JButton btnVoltar;
 
-    public PessoaFisicaReadUI(PessoaFisicaService pessoaFisicaService) {
+    private final PessoaFisicaService pessoaFisicaService;
+    private final MainUI mainUI;
+
+    public PessoaFisicaReadUI(PessoaFisicaService pessoaFisicaService, MainUI mainUI) {
         this.pessoaFisicaService = pessoaFisicaService;
+        this.mainUI = mainUI;
         initUI();
     }
+
     private void initUI() {
         setTitle("Listar Pessoas Físicas");
-        setSize(500, 300);
+        setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -30,8 +36,11 @@ public class PessoaFisicaReadUI extends JFrame {
         String[][] dados = carregarDados();
         tabelaPessoasFisicas = new JTable(dados, colunas);
         JScrollPane scrollPane = new JScrollPane(tabelaPessoasFisicas);
-
         add(scrollPane, BorderLayout.CENTER);
+
+        btnVoltar = new JButton("Voltar");
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+        add(btnVoltar, BorderLayout.SOUTH);
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -52,5 +61,10 @@ public class PessoaFisicaReadUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             return new String[0][0];
         }
+    }
+
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true);
+        dispose();
     }
 }

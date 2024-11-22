@@ -2,38 +2,49 @@ package com.transporte.transportadora.ui.freteui;
 
 import com.transporte.transportadora.model.Frete;
 import com.transporte.transportadora.service.FreteService;
-import com.transporte.transportadora.service.impl.FreteServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
 @Lazy
 @Component
 public class FreteReadUI extends JFrame {
 
     private JTable tabelaFretes;
-    private final FreteService freteService;
+    private JButton btnVoltar;
 
-    public FreteReadUI(FreteService freteService) {
+    private final FreteService freteService;
+    private final MainUI mainUI;
+
+    public FreteReadUI(FreteService freteService, MainUI mainUI) {
         this.freteService = freteService;
+        this.mainUI = mainUI;
         initUI();
     }
-    private void initUI() {
 
+    private void initUI() {
         setTitle("Listar Fretes");
         setSize(800, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Criar tabela
         String[] colunas = {"ID", "Data", "Peso", "Valor", "ICMS", "Pedágio", "Origem", "Destino", "Remetente", "Destinatário"};
         Object[][] dados = carregarDadosFretes();
         tabelaFretes = new JTable(dados, colunas);
         JScrollPane scrollPane = new JScrollPane(tabelaFretes);
 
         add(scrollPane, BorderLayout.CENTER);
+
+        // Botão Voltar
+        JPanel panelSul = new JPanel();
+        btnVoltar = new JButton("Voltar");
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+        panelSul.add(btnVoltar);
+        add(panelSul, BorderLayout.SOUTH);
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -61,5 +72,10 @@ public class FreteReadUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             return new Object[0][0];
         }
+    }
+
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true); // Reexibe a MainUI
+        dispose(); // Fecha a tela atual
     }
 }

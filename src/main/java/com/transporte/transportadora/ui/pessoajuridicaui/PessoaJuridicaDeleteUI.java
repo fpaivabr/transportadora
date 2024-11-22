@@ -2,29 +2,34 @@ package com.transporte.transportadora.ui.pessoajuridicaui;
 
 import com.transporte.transportadora.model.PessoaJuridica;
 import com.transporte.transportadora.service.PessoaJuridicaService;
-import com.transporte.transportadora.service.impl.PessoaJuridicaServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
 @Lazy
 @Component
 public class PessoaJuridicaDeleteUI extends JFrame {
 
     private JComboBox<PessoaJuridica> cmbPessoasJuridicas;
     private JButton btnDeletar;
+    private JButton btnVoltar;
 
     private final PessoaJuridicaService pessoaJuridicaService;
+    private final MainUI mainUI;
 
-    public PessoaJuridicaDeleteUI(PessoaJuridicaService pessoaJuridicaService) {
+    public PessoaJuridicaDeleteUI(PessoaJuridicaService pessoaJuridicaService, MainUI mainUI) {
         this.pessoaJuridicaService = pessoaJuridicaService;
+        this.mainUI = mainUI;
         initUI();
     }
+
     private void initUI() {
         setTitle("Deletar Pessoa Jurídica");
-        setSize(400, 150);
+        setSize(400, 200);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
@@ -48,6 +53,12 @@ public class PessoaJuridicaDeleteUI extends JFrame {
 
         btnDeletar.addActionListener(e -> deletarPessoaJuridica());
 
+        gbc.gridy++;
+        btnVoltar = new JButton("Voltar");
+        add(btnVoltar, gbc);
+
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -55,6 +66,7 @@ public class PessoaJuridicaDeleteUI extends JFrame {
     private void carregarPessoasJuridicas() {
         try {
             List<PessoaJuridica> pessoasJuridicas = pessoaJuridicaService.listarTodos();
+            cmbPessoasJuridicas.removeAllItems();
             for (PessoaJuridica pessoa : pessoasJuridicas) {
                 cmbPessoasJuridicas.addItem(pessoa);
             }
@@ -77,5 +89,10 @@ public class PessoaJuridicaDeleteUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao deletar Pessoa Jurídica: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true);
+        dispose();
     }
 }

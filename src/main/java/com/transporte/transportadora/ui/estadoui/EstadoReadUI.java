@@ -2,26 +2,30 @@ package com.transporte.transportadora.ui.estadoui;
 
 import com.transporte.transportadora.model.Estado;
 import com.transporte.transportadora.service.EstadoService;
-import com.transporte.transportadora.service.impl.EstadoServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
 @Lazy
 @Component
 public class EstadoReadUI extends JFrame {
 
     private JTable tabelaEstados;
+    private JButton btnVoltar;
     private final EstadoService estadoService;
+    private final MainUI mainUI;
 
-    public EstadoReadUI(EstadoService estadoService) {
+    public EstadoReadUI(EstadoService estadoService, MainUI mainUI) {
         this.estadoService = estadoService;
+        this.mainUI = mainUI;
         initUI();
     }
 
-        private void initUI() {
+    private void initUI() {
         setTitle("Listar Estados");
         setSize(500, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -33,6 +37,10 @@ public class EstadoReadUI extends JFrame {
         JScrollPane scrollPane = new JScrollPane(tabelaEstados);
 
         add(scrollPane, BorderLayout.CENTER);
+
+        btnVoltar = new JButton("Voltar");
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+        add(btnVoltar, BorderLayout.SOUTH);
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -54,5 +62,10 @@ public class EstadoReadUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             return new String[0][0];
         }
+    }
+
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true);
+        dispose();
     }
 }
