@@ -82,6 +82,7 @@ public class EstadoUpdateUI extends JFrame {
 
     private void carregarEstados() {
         try {
+            cmbEstados.removeAllItems(); // Limpa o JComboBox antes de recarregar
             List<Estado> estados = estadoService.listarTodos();
             for (Estado estado : estados) {
                 cmbEstados.addItem(estado);
@@ -103,12 +104,19 @@ public class EstadoUpdateUI extends JFrame {
             estado.setIcmsLocal(((Number) txtIcmsLocal.getValue()).doubleValue());
             estado.setIcmsOutroUf(((Number) txtIcmsOutroUf.getValue()).doubleValue());
 
+            // Atualizar no serviço
             estadoService.atualizarEstado(estado.getId(), estado);
+
             JOptionPane.showMessageDialog(this, "Estado atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+            // Recarregar os estados no JComboBox
+            carregarEstados();
+            cmbEstados.setSelectedItem(estado);
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar estado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
 }

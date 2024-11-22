@@ -2,19 +2,21 @@ package com.transporte.transportadora.ui.cidadeui;
 
 import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.service.CidadeService;
-import com.transporte.transportadora.service.impl.CidadeServiceImpl;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
 @Lazy
 @Component
 public class CidadeReadUI extends JFrame {
 
     private JTable tabelaCidades;
+    private JScrollPane scrollPane;
     private final CidadeService cidadeService;
+    private JButton atualizar;
 
     public CidadeReadUI(CidadeService cidadeService) {
         this.cidadeService = cidadeService;
@@ -27,16 +29,28 @@ public class CidadeReadUI extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Configuração da tabela
-        String[] colunas = {"ID", "Nome", "Estado", "Preço/Peso", "Preço/Valor"};
-        String[][] dados = carregarDados();
-        tabelaCidades = new JTable(dados, colunas);
-        JScrollPane scrollPane = new JScrollPane(tabelaCidades);
-
+        tabelaCidades = new JTable();
+        scrollPane = new JScrollPane(tabelaCidades);
         add(scrollPane, BorderLayout.CENTER);
+
+        atualizar = new JButton("Atualizar Tabela");
+        atualizar.addActionListener(e -> recarregarDados());
+        add(atualizar, BorderLayout.SOUTH);
+
+        recarregarDados();
 
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    private void recarregarDados() {
+        try {
+            String[] colunas = {"ID", "Nome", "Estado", "Preço/Peso", "Preço/Valor"};
+            String[][] dados = carregarDados();
+            tabelaCidades.setModel(new javax.swing.table.DefaultTableModel(dados, colunas));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao recarregar dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private String[][] carregarDados() {
@@ -58,4 +72,3 @@ public class CidadeReadUI extends JFrame {
         }
     }
 }
-

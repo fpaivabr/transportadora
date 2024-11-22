@@ -2,19 +2,20 @@ package com.transporte.transportadora.ui.cidadeui;
 
 import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.service.CidadeService;
-import com.transporte.transportadora.service.impl.CidadeServiceImpl;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
 @Lazy
 @Component
 public class CidadeDeleteUI extends JFrame {
 
     private JComboBox<Cidade> cmbCidades;
     private JButton btnDeletar;
+    private JButton btnAtualizar;
 
     private final CidadeService cidadeService;
 
@@ -32,10 +33,11 @@ public class CidadeDeleteUI extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
+
         gbc.gridx = 0;
         gbc.gridy = 0;
-
         add(new JLabel("Selecione a Cidade:"), gbc);
+
         gbc.gridx = 1;
         cmbCidades = new JComboBox<>();
         carregarCidades();
@@ -49,12 +51,19 @@ public class CidadeDeleteUI extends JFrame {
 
         btnDeletar.addActionListener(e -> deletarCidade());
 
+        gbc.gridy++;
+        btnAtualizar = new JButton("Atualizar");
+        add(btnAtualizar, gbc);
+
+        btnAtualizar.addActionListener(e -> carregarCidades());
+
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
     private void carregarCidades() {
         try {
+            cmbCidades.removeAllItems();
             List<Cidade> cidades = cidadeService.listarTodas();
             for (Cidade cidade : cidades) {
                 cmbCidades.addItem(cidade);
@@ -75,9 +84,10 @@ public class CidadeDeleteUI extends JFrame {
             cidadeService.deletarCidade(cidade.getId());
             JOptionPane.showMessageDialog(this, "Cidade excluída com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 
+            carregarCidades();
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao excluir cidade: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
-

@@ -4,8 +4,6 @@ import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.model.Estado;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.EstadoService;
-import com.transporte.transportadora.service.impl.CidadeServiceImpl;
-import com.transporte.transportadora.service.impl.EstadoServiceImpl;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +11,7 @@ import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.util.List;
+
 @Lazy
 @Component
 public class CidadeUpdateUI extends JFrame {
@@ -35,7 +34,7 @@ public class CidadeUpdateUI extends JFrame {
 
     private void initUI() {
         setTitle("Atualizar Cidade");
-        setSize(500, 300);
+        setSize(500, 350);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
@@ -45,12 +44,15 @@ public class CidadeUpdateUI extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
+        // ComboBox para selecionar a cidade
         add(new JLabel("Selecione a Cidade:"), gbc);
         gbc.gridx = 1;
         cmbCidades = new JComboBox<>();
         carregarCidades();
         add(cmbCidades, gbc);
+        cmbCidades.addActionListener(e -> preencherCampos());
 
+        // Campo para o nome da cidade
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Nome da Cidade:"), gbc);
@@ -58,6 +60,7 @@ public class CidadeUpdateUI extends JFrame {
         txtNome = new JTextField(20);
         add(txtNome, gbc);
 
+        // ComboBox para selecionar o estado
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Estado:"), gbc);
@@ -66,6 +69,7 @@ public class CidadeUpdateUI extends JFrame {
         carregarEstados();
         add(cmbEstado, gbc);
 
+        // Campo para preço por peso
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Preço por Peso:"), gbc);
@@ -75,6 +79,7 @@ public class CidadeUpdateUI extends JFrame {
         txtPrecoUnitPeso = new JFormattedTextField(numberFormatter);
         add(txtPrecoUnitPeso, gbc);
 
+        // Campo para preço por valor
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Preço por Valor:"), gbc);
@@ -82,12 +87,12 @@ public class CidadeUpdateUI extends JFrame {
         txtPrecoUnitValor = new JFormattedTextField(numberFormatter);
         add(txtPrecoUnitValor, gbc);
 
+        // Botão de atualização
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
         btnAtualizar = new JButton("Atualizar");
         add(btnAtualizar, gbc);
-
         btnAtualizar.addActionListener(e -> atualizarCidade());
 
         setLocationRelativeTo(null);
@@ -116,11 +121,31 @@ public class CidadeUpdateUI extends JFrame {
         }
     }
 
+    private void preencherCampos() {
+        Cidade cidade = (Cidade) cmbCidades.getSelectedItem();
+        if (cidade != null) {
+            txtNome.setText(cidade.getNome());
+            cmbEstado.setSelectedItem(cidade.getEstado());
+            txtPrecoUnitPeso.setValue(cidade.getPrecoUnitPeso());
+            txtPrecoUnitValor.setValue(cidade.getPrecoUnitValor());
+        }
+    }
+
     private void atualizarCidade() {
         try {
             Cidade cidade = (Cidade) cmbCidades.getSelectedItem();
             if (cidade == null) {
                 JOptionPane.showMessageDialog(this, "Selecione uma cidade.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (txtNome.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "O nome da cidade é obrigatório.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (cmbEstado.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this, "Selecione um estado.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -137,4 +162,3 @@ public class CidadeUpdateUI extends JFrame {
         }
     }
 }
-
