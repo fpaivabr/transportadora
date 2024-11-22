@@ -1,2 +1,4 @@
-package com.transporte.transportadora.ui.clienteui;public class ClienteUpdateUI {
+package com.transporte.transportadora.ui.clienteui;
+
+public class ClienteUpdateUI {
 }
