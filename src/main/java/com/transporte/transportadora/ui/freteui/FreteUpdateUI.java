@@ -4,6 +4,7 @@ import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.model.Cliente;
 import com.transporte.transportadora.model.Frete;
 import com.transporte.transportadora.model.TipoCliente;
+import com.transporte.transportadora.repository.ClienteRepository;
 import com.transporte.transportadora.repository.FreteRepository;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.ClienteService;
@@ -27,6 +28,7 @@ import java.util.Locale;
 public class FreteUpdateUI extends JFrame {
 
     private final FreteRepository freteRepository;
+    private final ClienteRepository clienteRepository;
     private JComboBox<String> cmbRemetente;
     private JComboBox<String> cmbDestinatario;
     private JComboBox<String> cmbOrigem;
@@ -46,13 +48,14 @@ public class FreteUpdateUI extends JFrame {
     private final MainUI mainUI;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public FreteUpdateUI(ClienteService clienteService, CidadeService cidadeService, FreteService freteService, FreteRepository freteRepository, MainUI mainUI) {
+    public FreteUpdateUI(ClienteService clienteService, CidadeService cidadeService, FreteService freteService, FreteRepository freteRepository, MainUI mainUI, ClienteRepository clienteRepository) {
         this.freteService = freteService;
         this.cidadeService = cidadeService;
         this.clienteService = clienteService;
         this.mainUI = mainUI;
         initUI();
         this.freteRepository = freteRepository;
+        this.clienteRepository = clienteRepository;
     }
 
     private void initUI() {
@@ -204,11 +207,16 @@ public class FreteUpdateUI extends JFrame {
         try {
             List<Cliente> clientes = clienteService.listarTodos();
             for (Cliente cliente : clientes) {
-                cmbRemetente.addItem(cliente);
-                cmbDestinatario.addItem(cliente);
+                if(cliente.getTipoCliente().equals(TipoCliente.PESSOA_FISICA)){
+                    cmbOrigem.addItem(cliente.getPessoaFisica().getCpf());
+                    cmbDestino.addItem(cliente.getPessoaFisica().getCpf());
+                }else{
+                    cmbRemetente.addItem(cliente.getPessoaJuridica().getCnpj());
+                    cmbDestinatario.addItem(cliente.getPessoaJuridica().getCnpj());
+                }
             }
 
-            List<Frete> fretes = freteService.buscarFretesPorRemetente(remetente);
+            List<Frete> fretes = freteService.buscarFretesPorRemetente(clienteRepository.findByDocumento(cmbRemetente.getSelectedItem().toString()).orElse(null));
             cmbFretes.removeAllItems();
 
             if (fretes.isEmpty()) {

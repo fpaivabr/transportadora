@@ -4,6 +4,8 @@ import com.transporte.transportadora.model.Cliente;
 import com.transporte.transportadora.model.PessoaFisica;
 import com.transporte.transportadora.model.PessoaJuridica;
 import com.transporte.transportadora.model.TipoCliente;
+import com.transporte.transportadora.repository.PessoaFisicaRepository;
+import com.transporte.transportadora.repository.PessoaJuridicaRepository;
 import com.transporte.transportadora.service.ClienteService;
 import com.transporte.transportadora.ui.MainUI;
 import org.springframework.context.annotation.Lazy;
@@ -18,6 +20,8 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class ClienteCreateUI extends JFrame {
 
+    private final PessoaJuridicaRepository pessoaJuridicaRepository;
+    private final PessoaFisicaRepository pessoaFisicaRepository;
     private JTextField txtEndereco;
     private JTextField txtTelefone;
     private JTextField txtDataInsc;
@@ -34,10 +38,12 @@ public class ClienteCreateUI extends JFrame {
     private final MainUI mainUI;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public ClienteCreateUI(ClienteService clienteService, MainUI mainUI) {
+    public ClienteCreateUI(ClienteService clienteService, MainUI mainUI, PessoaJuridicaRepository pessoaJuridicaRepository, PessoaFisicaRepository pessoaFisicaRepository) {
         this.clienteService = clienteService;
         this.mainUI = mainUI;
         initUI();
+        this.pessoaJuridicaRepository = pessoaJuridicaRepository;
+        this.pessoaFisicaRepository = pessoaFisicaRepository;
     }
 
     private void initUI() {
@@ -162,6 +168,7 @@ public class ClienteCreateUI extends JFrame {
             String telefone = txtTelefone.getText();
             LocalDate dataInsc = LocalDate.parse(txtDataInsc.getText(), dateFormatter);
             TipoCliente tipoCliente = (TipoCliente) cmbTipoCliente.getSelectedItem();
+            System.out.println(tipoCliente);
 
             Cliente cliente = new Cliente();
             cliente.setEndereco(endereco);
@@ -169,16 +176,20 @@ public class ClienteCreateUI extends JFrame {
             cliente.setDataInsc(dataInsc);
             cliente.setTipoCliente(tipoCliente);
 
-            if (tipoCliente == TipoCliente.PESSOA_FISICA) {
+            if (cmbTipoCliente.getSelectedItem() == TipoCliente.PESSOA_FISICA) {
                 PessoaFisica pessoaFisica = new PessoaFisica();
                 pessoaFisica.setNomeCli(txtNomeCli.getText());
                 pessoaFisica.setCpf(txtCpf.getText());
+                pessoaFisica.setCliente(cliente);
+                pessoaFisica = pessoaFisicaRepository.save(pessoaFisica);
                 cliente.setPessoaFisica(pessoaFisica);
-            } else if (tipoCliente == TipoCliente.PESSOA_JURIDICA) {
+            } else if (cmbTipoCliente.getSelectedItem() == TipoCliente.PESSOA_JURIDICA) {
                 PessoaJuridica pessoaJuridica = new PessoaJuridica();
                 pessoaJuridica.setRazaoSocial(txtRazaoSocial.getText());
                 pessoaJuridica.setCnpj(txtCnpj.getText());
                 pessoaJuridica.setInscEstadual(txtInscEstadual.getText());
+                pessoaJuridica.setCliente(cliente);
+                pessoaJuridica = pessoaJuridicaRepository.save(pessoaJuridica);
                 cliente.setPessoaJuridica(pessoaJuridica);
             }
 

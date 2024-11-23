@@ -31,7 +31,6 @@ public class ClienteReadUI extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Configuração da tabela
         String[] colunas = {"ID", "Endereço", "Telefone", "Tipo"};
         String[][] dados = carregarDados();
         tabelaClientes = new JTable(dados, colunas);
