@@ -94,13 +94,13 @@ public class MainUI extends JFrame {
                 tela = context.getBean(ClienteCreateUI.class);
                 break;
             case "ClienteListar":
-                tela = context.getBean(ClienteCreateUI.class);
+                tela = context.getBean(ClienteReadUI.class);
                 break;
             case "ClienteAtualizar":
-                tela = context.getBean(ClienteCreateUI.class);
+                tela = context.getBean(ClienteUpdateUI.class);
                 break;
             case "ClienteDeletar":
-                tela = context.getBean(ClienteCreateUI.class);
+                tela = context.getBean(ClienteDeleteUI.class);
                 break;
 
             // Telas de Estado
@@ -132,9 +132,6 @@ public class MainUI extends JFrame {
                 break;
 
             // Telas de Pessoa Física
-            case "Pessoa FísicaCadastrar":
-                tela = context.getBean(PessoaFisicaCreateUI.class);
-                break;
             case "Pessoa FísicaListar":
                 tela = context.getBean(PessoaFisicaReadUI.class);
                 break;
@@ -146,9 +143,6 @@ public class MainUI extends JFrame {
                 break;
 
             // Telas de Pessoa Jurídica
-            case "Pessoa JurídicaCadastrar":
-                tela = context.getBean(PessoaJuridicaCreateUI.class);
-                break;
             case "Pessoa JurídicaListar":
                 tela = context.getBean(PessoaJuridicaReadUI.class);
                 break;

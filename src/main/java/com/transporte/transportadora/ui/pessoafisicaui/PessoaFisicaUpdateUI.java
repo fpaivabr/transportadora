@@ -105,7 +105,7 @@ public class PessoaFisicaUpdateUI extends JFrame {
 
     private void atualizarPessoaFisica() {
         try {
-            PessoaFisica pessoaSelecionada = (PessoaFisica) cmbPessoasFisicas.getSelectedItem();
+            PessoaFisica pessoaSelecionada = clienteRepository.findByDocumento(cmbPessoasFisicas.getSelectedItem().toString()).orElse(null).getPessoaFisica();
             if (pessoaSelecionada == null) {
                 JOptionPane.showMessageDialog(this, "Selecione uma Pessoa Física.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;

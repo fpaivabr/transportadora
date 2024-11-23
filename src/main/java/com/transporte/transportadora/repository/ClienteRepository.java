@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
-    @Query(nativeQuery = true, value = "select * from CLIENTE c " +
+    @Query(nativeQuery = true, value = "select c.* from CLIENTE c " +
             "   left join PESSOA_FISICA pf on pf.COD_CLI = c.COD_CLI " +
             "   left join PESSOA_JURIDICA pj on pj.COD_CLI = c.COD_CLI " +
             " WHERE pf.CPF = :documento OR pj.CNPJ = :documento")
