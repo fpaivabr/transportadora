@@ -18,6 +18,7 @@ public class EstadoDeleteUI extends JFrame {
     private JComboBox<String> cmbEstados;
     private JButton btnExcluir;
     private JButton btnVoltar;
+    private JButton btnAtualizar;
 
     private final EstadoService estadoService;
     private final EstadoRepository estadoRepository;
@@ -56,6 +57,12 @@ public class EstadoDeleteUI extends JFrame {
         btnExcluir.addActionListener(e -> excluirEstado());
 
         gbc.gridy++;
+        btnAtualizar = new JButton("Atualizar");
+        add(btnAtualizar, gbc);
+
+        btnAtualizar.addActionListener(e -> carregarEstados());
+
+        gbc.gridy++;
         btnVoltar = new JButton("Voltar");
         btnVoltar.addActionListener(e -> voltarParaMainUI());
         add(btnVoltar, gbc);
@@ -66,6 +73,7 @@ public class EstadoDeleteUI extends JFrame {
 
     private void carregarEstados() {
         try {
+            cmbEstados.removeAllItems();
             List<Estado> estados = estadoService.listarTodos();
             for (Estado estado : estados) {
                 cmbEstados.addItem(estado.getNome());

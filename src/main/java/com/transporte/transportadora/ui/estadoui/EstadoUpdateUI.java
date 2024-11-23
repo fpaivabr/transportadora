@@ -93,6 +93,7 @@ public class EstadoUpdateUI extends JFrame {
 
     private void carregarEstados() {
         try {
+            cmbEstados.removeAllItems(); // Limpa o JComboBox antes de recarregar
             List<Estado> estados = estadoService.listarTodos();
             for (Estado estado : estados) {
                 cmbEstados.addItem(estado.getNome());
@@ -131,6 +132,9 @@ public class EstadoUpdateUI extends JFrame {
 
             JOptionPane.showMessageDialog(this, "Estado atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 
+            carregarEstados();
+            cmbEstados.setSelectedItem(estado);
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar estado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -140,4 +144,6 @@ public class EstadoUpdateUI extends JFrame {
         mainUI.setVisible(true);
         dispose();
     }
+}
+
 }

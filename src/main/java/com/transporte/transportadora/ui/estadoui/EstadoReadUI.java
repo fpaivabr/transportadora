@@ -18,6 +18,7 @@ public class EstadoReadUI extends JFrame {
     private JButton btnVoltar;
     private final EstadoService estadoService;
     private final MainUI mainUI;
+    private JButton atualizar;
 
     public EstadoReadUI(EstadoService estadoService, MainUI mainUI) {
         this.estadoService = estadoService;
@@ -38,12 +39,26 @@ public class EstadoReadUI extends JFrame {
 
         add(scrollPane, BorderLayout.CENTER);
 
+        atualizar = new JButton("Atualizar Tabela");
+        atualizar.addActionListener(e -> recarregarDados());
+        add(atualizar, BorderLayout.SOUTH);
+
         btnVoltar = new JButton("Voltar");
         btnVoltar.addActionListener(e -> voltarParaMainUI());
         add(btnVoltar, BorderLayout.SOUTH);
 
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    private void recarregarDados() {
+        try {
+            String[] colunas = {"ID", "Nome", "ICMS Local", "ICMS Outro UF"};
+            String[][] dados = carregarDados();
+            tabelaEstados.setModel(new javax.swing.table.DefaultTableModel(dados, colunas));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao recarregar dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private String[][] carregarDados() {

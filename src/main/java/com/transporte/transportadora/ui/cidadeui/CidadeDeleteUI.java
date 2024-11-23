@@ -18,6 +18,7 @@ public class CidadeDeleteUI extends JFrame {
     private final CidadeRepository cidadeRepository;
     private JComboBox<String> cmbCidades;
     private JButton btnDeletar;
+    private JButton btnAtualizar;
     private JButton btnVoltar;
 
     private final CidadeService cidadeService;
@@ -39,10 +40,11 @@ public class CidadeDeleteUI extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
+
         gbc.gridx = 0;
         gbc.gridy = 0;
-
         add(new JLabel("Selecione a Cidade:"), gbc);
+
         gbc.gridx = 1;
         cmbCidades = new JComboBox<>();
         carregarCidades();
@@ -57,6 +59,12 @@ public class CidadeDeleteUI extends JFrame {
         btnDeletar.addActionListener(e -> deletarCidade());
 
         gbc.gridy++;
+        btnAtualizar = new JButton("Atualizar");
+        add(btnAtualizar, gbc);
+
+        btnAtualizar.addActionListener(e -> carregarCidades());
+
+        gbc.gridy++;
         btnVoltar = new JButton("Voltar");
         btnVoltar.addActionListener(e -> voltarParaMainUI());
         add(btnVoltar, gbc);
@@ -67,6 +75,7 @@ public class CidadeDeleteUI extends JFrame {
 
     private void carregarCidades() {
         try {
+            cmbCidades.removeAllItems();
             List<Cidade> cidades = cidadeService.listarTodas();
             for (Cidade cidade : cidades) {
                 cmbCidades.addItem(cidade.getNome());

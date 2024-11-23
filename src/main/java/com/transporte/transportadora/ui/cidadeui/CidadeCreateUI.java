@@ -38,64 +38,64 @@ public class CidadeCreateUI extends JFrame {
         initUI();
         this.estadoRepository = estadoRepository;
     }
-        private void initUI() {
-            setTitle("Cadastro de Cidade");
-            setSize(400, 300);
-            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            setLayout(new GridBagLayout());
+    private void initUI() {
+        setTitle("Cadastro de Cidade");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridBagLayout());
 
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.insets = new Insets(5, 5, 5, 5);
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.gridx = 0;
-            gbc.gridy = 0;
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
-            add(new JLabel("Nome da Cidade:"), gbc);
-            gbc.gridx = 1;
-            txtNome = new JTextField(20);
-            add(txtNome, gbc);
+        add(new JLabel("Nome da Cidade:"), gbc);
+        gbc.gridx = 1;
+        txtNome = new JTextField(20);
+        add(txtNome, gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy++;
-            add(new JLabel("Estado:"), gbc);
-            gbc.gridx = 1;
-            cmbEstado = new JComboBox<>();
-            carregarEstados();
-            add(cmbEstado, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(new JLabel("Estado:"), gbc);
+        gbc.gridx = 1;
+        cmbEstado = new JComboBox<>();
+        carregarEstados();
+        add(cmbEstado, gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy++;
-            add(new JLabel("Preço por Peso:"), gbc);
-            gbc.gridx = 1;
-            NumberFormatter numberFormatter = new NumberFormatter();
-            numberFormatter.setAllowsInvalid(false);
-            txtPrecoUnitPeso = new JFormattedTextField(numberFormatter);
-            add(txtPrecoUnitPeso, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(new JLabel("Preço por Peso:"), gbc);
+        gbc.gridx = 1;
+        NumberFormatter numberFormatter = new NumberFormatter();
+        numberFormatter.setAllowsInvalid(false);
+        txtPrecoUnitPeso = new JFormattedTextField(numberFormatter);
+        add(txtPrecoUnitPeso, gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy++;
-            add(new JLabel("Preço por Valor:"), gbc);
-            gbc.gridx = 1;
-            txtPrecoUnitValor = new JFormattedTextField(numberFormatter);
-            add(txtPrecoUnitValor, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(new JLabel("Preço por Valor:"), gbc);
+        gbc.gridx = 1;
+        txtPrecoUnitValor = new JFormattedTextField(numberFormatter);
+        add(txtPrecoUnitValor, gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy++;
-            gbc.gridwidth = 2;
-            btnSalvar = new JButton("Salvar");
-            add(btnSalvar, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        btnSalvar = new JButton("Salvar");
+        add(btnSalvar, gbc);
 
-            btnSalvar.addActionListener(e -> salvarCidade());
+        btnSalvar.addActionListener(e -> salvarCidade());
 
-            gbc.gridy++;
-            btnVoltar = new JButton("Voltar");
-            add(btnVoltar, gbc);
+        gbc.gridy++;
+        btnVoltar = new JButton("Voltar");
+        add(btnVoltar, gbc);
 
-            btnVoltar.addActionListener(e -> voltarParaMainUI());
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
 
-            setLocationRelativeTo(null);
-            setVisible(true);
-        }
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
 
     private void carregarEstados() {
         try {

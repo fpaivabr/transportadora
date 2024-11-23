@@ -37,7 +37,7 @@ public class CidadeUpdateUI extends JFrame {
 
     private void initUI() {
         setTitle("Atualizar Cidade");
-        setSize(400, 250);
+        setSize(500, 350);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
@@ -47,13 +47,16 @@ public class CidadeUpdateUI extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
+        // ComboBox para selecionar a cidade
         add(new JLabel("Selecione a Cidade:"), gbc);
         gbc.gridx = 1;
         cmbCidades = new JComboBox<>();
         carregarCidades();
         cmbCidades.addActionListener(e -> preencherCampos());
         add(cmbCidades, gbc);
+        cmbCidades.addActionListener(e -> preencherCampos());
 
+        // Campo para o nome da cidade
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("Nome da Cidade:"), gbc);
@@ -61,12 +64,39 @@ public class CidadeUpdateUI extends JFrame {
         txtNome = new JTextField(20);
         add(txtNome, gbc);
 
+        // ComboBox para selecionar o estado
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(new JLabel("Estado:"), gbc);
+        gbc.gridx = 1;
+        cmbEstado = new JComboBox<>();
+        carregarEstados();
+        add(cmbEstado, gbc);
+
+        // Campo para preço por peso
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(new JLabel("Preço por Peso:"), gbc);
+        gbc.gridx = 1;
+        NumberFormatter numberFormatter = new NumberFormatter();
+        numberFormatter.setAllowsInvalid(false);
+        txtPrecoUnitPeso = new JFormattedTextField(numberFormatter);
+        add(txtPrecoUnitPeso, gbc);
+
+        // Campo para preço por valor
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(new JLabel("Preço por Valor:"), gbc);
+        gbc.gridx = 1;
+        txtPrecoUnitValor = new JFormattedTextField(numberFormatter);
+        add(txtPrecoUnitValor, gbc);
+
+        // Botão de atualização
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
         btnAtualizar = new JButton("Atualizar");
         add(btnAtualizar, gbc);
-
         btnAtualizar.addActionListener(e -> atualizarCidade());
 
         gbc.gridy++;
@@ -104,6 +134,16 @@ public class CidadeUpdateUI extends JFrame {
         Cidade cidade = (Cidade) cmbCidades.getSelectedItem();
         if (cidade != null) {
             txtNome.setText(cidade.getNome());
+            cmbEstado.setSelectedItem(cidade.getEstado());
+            txtPrecoUnitPeso.setValue(cidade.getPrecoUnitPeso());
+            txtPrecoUnitValor.setValue(cidade.getPrecoUnitValor());
+        }
+    }
+
+    private void preencherCampos() {
+        Cidade cidade = (Cidade) cmbCidades.getSelectedItem();
+        if (cidade != null) {
+            txtNome.setText(cidade.getNome());
         }
     }
 
@@ -112,6 +152,16 @@ public class CidadeUpdateUI extends JFrame {
             Cidade cidade = (Cidade) cmbCidades.getSelectedItem();
             if (cidade == null) {
                 JOptionPane.showMessageDialog(this, "Selecione uma cidade.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (txtNome.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "O nome da cidade é obrigatório.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (cmbEstado.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this, "Selecione um estado.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 

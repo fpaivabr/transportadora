@@ -44,6 +44,8 @@ public class CidadeServiceImpl implements CidadeService {
             Cidade cidadeAtualizada = cidadeExistente.get();
             cidadeAtualizada.setNome(cidade.getNome());
             cidadeAtualizada.setEstado(cidade.getEstado());
+            cidadeAtualizada.setPrecoUnitPeso(cidade.getPrecoUnitPeso());
+            cidadeAtualizada.setPrecoUnitValor(cidade.getPrecoUnitValor());
             return cidadeRepository.save(cidadeAtualizada);
         } else {
             throw new RuntimeException("Cidade não encontrada com o ID: " + id);
@@ -68,4 +70,3 @@ public class CidadeServiceImpl implements CidadeService {
         }
     }
 }
-

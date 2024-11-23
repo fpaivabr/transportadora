@@ -15,8 +15,10 @@ import java.util.List;
 public class CidadeReadUI extends JFrame {
 
     private JTable tabelaCidades;
+    private JScrollPane scrollPane;
     private JButton btnVoltar;
     private final CidadeService cidadeService;
+    private JButton atualizar;
     private final MainUI mainUI;
 
     public CidadeReadUI(CidadeService cidadeService, MainUI mainUI) {
@@ -31,13 +33,15 @@ public class CidadeReadUI extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Configuração da tabela
-        String[] colunas = {"ID", "Nome", "Estado", "Preço/Peso", "Preço/Valor"};
-        String[][] dados = carregarDados();
-        tabelaCidades = new JTable(dados, colunas);
-        JScrollPane scrollPane = new JScrollPane(tabelaCidades);
-
+        tabelaCidades = new JTable();
+        scrollPane = new JScrollPane(tabelaCidades);
         add(scrollPane, BorderLayout.CENTER);
+
+        atualizar = new JButton("Atualizar Tabela");
+        atualizar.addActionListener(e -> recarregarDados());
+        add(atualizar, BorderLayout.SOUTH);
+
+        recarregarDados();
 
         // Botão Voltar
         btnVoltar = new JButton("Voltar");
@@ -46,6 +50,16 @@ public class CidadeReadUI extends JFrame {
 
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    private void recarregarDados() {
+        try {
+            String[] colunas = {"ID", "Nome", "Estado", "Preço/Peso", "Preço/Valor"};
+            String[][] dados = carregarDados();
+            tabelaCidades.setModel(new javax.swing.table.DefaultTableModel(dados, colunas));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao recarregar dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private String[][] carregarDados() {

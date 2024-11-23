@@ -1,3 +1,4 @@
+
 package com.transporte.transportadora.service.impl;
 
 import com.transporte.transportadora.model.PessoaJuridica;
@@ -66,5 +67,3 @@ public class PessoaJuridicaServiceImpl implements PessoaJuridicaService {
         }
     }
 }
-
-
