@@ -145,5 +145,3 @@ public class EstadoUpdateUI extends JFrame {
         dispose();
     }
 }
-
-}

@@ -2,6 +2,7 @@ package com.transporte.transportadora.ui.cidadeui;
 
 import com.transporte.transportadora.model.Cidade;
 import com.transporte.transportadora.model.Estado;
+import com.transporte.transportadora.repository.CidadeRepository;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.EstadoService;
 import com.transporte.transportadora.ui.MainUI;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.util.List;
 
@@ -26,11 +28,13 @@ public class CidadeUpdateUI extends JFrame {
 
     private final CidadeService cidadeService;
     private final EstadoService estadoService;
+    private final CidadeRepository cidadeRepository;
     private final MainUI mainUI;
 
-    public CidadeUpdateUI(CidadeService cidadeService, MainUI mainUI, EstadoService estadoService) {
+    public CidadeUpdateUI(CidadeService cidadeService, MainUI mainUI, EstadoService estadoService, CidadeRepository cidadeRepository) {
         this.cidadeService = cidadeService;
         this.estadoService = estadoService;
+        this.cidadeRepository = cidadeRepository;
         this.mainUI = mainUI;
         initUI();
     }
@@ -131,7 +135,7 @@ public class CidadeUpdateUI extends JFrame {
     }
 
     private void preencherCampos() {
-        Cidade cidade = (Cidade) cmbCidades.getSelectedItem();
+        Cidade cidade = cidadeRepository.findByNome(cmbCidades.getSelectedItem().toString()).orElse(null);
         if (cidade != null) {
             txtNome.setText(cidade.getNome());
             cmbEstado.setSelectedItem(cidade.getEstado());
@@ -140,16 +144,9 @@ public class CidadeUpdateUI extends JFrame {
         }
     }
 
-    private void preencherCampos() {
-        Cidade cidade = (Cidade) cmbCidades.getSelectedItem();
-        if (cidade != null) {
-            txtNome.setText(cidade.getNome());
-        }
-    }
-
     private void atualizarCidade() {
         try {
-            Cidade cidade = (Cidade) cmbCidades.getSelectedItem();
+            Cidade cidade = cidadeRepository.findByNome(cmbCidades.getSelectedItem().toString()).orElse(null);
             if (cidade == null) {
                 JOptionPane.showMessageDialog(this, "Selecione uma cidade.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -182,3 +179,4 @@ public class CidadeUpdateUI extends JFrame {
         dispose();
     }
 }
+

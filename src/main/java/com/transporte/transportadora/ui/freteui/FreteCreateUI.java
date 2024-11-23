@@ -37,7 +37,7 @@ public class FreteCreateUI extends JFrame {
     private JFormattedTextField txtPedagio;
     private JComboBox<String> cmbOrigem;
     private JComboBox<String> cmbDestino;
-    private JComboBox<String>   cmbRemetente;
+    private JComboBox<String> cmbRemetente;
     private JComboBox<String> cmbDestinatario;
     private JButton btnSalvar;
     private JButton btnVoltar;
@@ -98,7 +98,7 @@ public class FreteCreateUI extends JFrame {
             gbc.gridy++;
             add(new JLabel("Valor (R$):"), gbc);
             gbc.gridx = 1;
-            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+            NumberFormat currencyFormat = NumberFormat.getInstance(new Locale("pt", "BR"));
             NumberFormatter currencyFormatter = new NumberFormatter(currencyFormat);
             currencyFormatter.setAllowsInvalid(false);
             currencyFormatter.setOverwriteMode(true);
@@ -183,6 +183,8 @@ public class FreteCreateUI extends JFrame {
 
     private void carregarCidades() {
         try {
+            cmbOrigem = new JComboBox<>();
+            cmbDestino = new JComboBox<>();
             List<Cidade> cidades = cidadeService.listarTodas();
             for (Cidade cidade : cidades) {
                 cmbOrigem.addItem(cidade.getNome());
@@ -195,6 +197,8 @@ public class FreteCreateUI extends JFrame {
 
     private void carregarClientes() {
         try {
+            cmbRemetente = new JComboBox<>();
+            cmbDestinatario = new JComboBox<>();
             List<Cliente> clientes = clienteService.listarTodos();
             for (Cliente cliente : clientes) {
                 if(cliente.getTipoCliente().equals(TipoCliente.PESSOA_FISICA)){

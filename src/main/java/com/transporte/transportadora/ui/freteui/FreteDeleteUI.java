@@ -77,7 +77,7 @@ public class FreteDeleteUI extends JFrame {
 
     private void deletarFrete() {
         try {
-            Frete frete = freteRepository.findByNumConhec(Long.valueOf(cmbFretes.getSelectedItem().toString())).orElse(null);
+            Frete frete = freteRepository.findByNumConhec((cmbFretes.getSelectedItem().toString())).orElse(null);
             if (frete == null) {
                 JOptionPane.showMessageDialog(this, "Selecione um frete para deletar.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;

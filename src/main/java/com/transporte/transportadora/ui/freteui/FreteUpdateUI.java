@@ -174,6 +174,7 @@ public class FreteUpdateUI extends JFrame {
 
     private void carregarFretes() {
         try {
+            cmbFretes = new JComboBox<>();
             List<Cliente> clientes = clienteService.listarTodos();
             cmbRemetente.removeAllItems();
             cmbDestinatario.removeAllItems();
@@ -193,6 +194,8 @@ public class FreteUpdateUI extends JFrame {
 
     private void carregarCidades() {
         try {
+            cmbOrigem = new JComboBox<>();
+            cmbDestinatario = new JComboBox<>();
             List<Cidade> cidades = cidadeService.listarTodas();
             for (Cidade cidade : cidades) {
                 cmbOrigem.addItem(cidade.getNome());
@@ -205,6 +208,10 @@ public class FreteUpdateUI extends JFrame {
 
     private void carregarClientes() {
         try {
+            cmbOrigem = new JComboBox<>();
+            cmbDestino = new JComboBox<>();
+            cmbRemetente = new JComboBox<>();
+            cmbDestinatario = new JComboBox<>();
             List<Cliente> clientes = clienteService.listarTodos();
             for (Cliente cliente : clientes) {
                 if(cliente.getTipoCliente().equals(TipoCliente.PESSOA_FISICA)){
@@ -233,7 +240,7 @@ public class FreteUpdateUI extends JFrame {
     }
 
     private void preencherDadosFrete() {
-        Frete frete = freteRepository.findByNumConhec(Long.valueOf(cmbFretes.getSelectedItem().toString())).orElse(null);
+        Frete frete = freteRepository.findByNumConhec((cmbFretes.getSelectedItem().toString())).orElse(null);
         if (frete != null) {
             txtDataFrete.setText(frete.getDataFrete().format(dateFormatter));
             txtPeso.setValue(frete.getPeso());
@@ -249,7 +256,7 @@ public class FreteUpdateUI extends JFrame {
 
     private void atualizarFrete() {
         try {
-            Frete frete = (Frete) cmbFretes.getSelectedItem();
+            Frete frete = freteRepository.findByNumConhec((cmbFretes.getSelectedItem().toString())).orElse(null);
             if (frete == null) {
                 JOptionPane.showMessageDialog(this, "Selecione um frete para atualizar.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
