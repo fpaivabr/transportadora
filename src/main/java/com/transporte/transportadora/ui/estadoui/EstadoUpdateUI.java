@@ -65,14 +65,14 @@ public class EstadoUpdateUI extends JFrame {
         gbc.gridy++;
         add(new JLabel("ICMS Local:"), gbc);
         gbc.gridx = 1;
-        txtIcmsLocal = new JFormattedTextField(new NumberFormatter(new DecimalFormat("#0.00")));
+        txtIcmsLocal = new JFormattedTextField(new NumberFormatter());
         add(txtIcmsLocal, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         add(new JLabel("ICMS Outro UF:"), gbc);
         gbc.gridx = 1;
-        txtIcmsOutroUf = new JFormattedTextField(new NumberFormatter(new DecimalFormat("#0.00")));
+        txtIcmsOutroUf = new JFormattedTextField(new NumberFormatter());
         add(txtIcmsOutroUf, gbc);
 
         gbc.gridx = 0;
@@ -104,7 +104,7 @@ public class EstadoUpdateUI extends JFrame {
     }
 
     private void preencherCampos() {
-        Estado estado = (Estado) cmbEstados.getSelectedItem();
+        Estado estado = estadoRepository.findByNome(cmbEstados.getSelectedItem().toString()).orElse(null);
         if (estado != null) {
             txtNome.setText(estado.getNome());
             txtIcmsLocal.setValue(estado.getIcmsLocal());
