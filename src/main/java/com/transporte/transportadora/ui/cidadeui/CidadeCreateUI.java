@@ -6,12 +6,16 @@ import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.EstadoService;
 import com.transporte.transportadora.service.impl.CidadeServiceImpl;
 import com.transporte.transportadora.service.impl.EstadoServiceImpl;
+import com.transporte.transportadora.ui.MainUI;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.util.List;
-
+@Lazy
+@Component
 public class CidadeCreateUI extends JFrame {
 
     private JTextField txtNome;
@@ -19,13 +23,19 @@ public class CidadeCreateUI extends JFrame {
     private JFormattedTextField txtPrecoUnitPeso;
     private JFormattedTextField txtPrecoUnitValor;
     private JButton btnSalvar;
+    private JButton btnVoltar;
 
-    private CidadeService cidadeService;
-    private EstadoService estadoService;
+    private final CidadeService cidadeService;
+    private final MainUI mainUI;
+    private final EstadoService estadoService;
 
-    public CidadeCreateUI() {
-        cidadeService = new CidadeServiceImpl();
-        estadoService = new EstadoServiceImpl();
+    public CidadeCreateUI(EstadoService estadoService, CidadeService cidadeService, MainUI mainUI) {
+        this.cidadeService = cidadeService;
+        this.estadoService = estadoService;
+        this.mainUI = mainUI;
+        initUI();
+    }
+    private void initUI() {
         setTitle("Cadastro de Cidade");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,6 +84,12 @@ public class CidadeCreateUI extends JFrame {
 
         btnSalvar.addActionListener(e -> salvarCidade());
 
+        gbc.gridy++;
+        btnVoltar = new JButton("Voltar");
+        add(btnVoltar, gbc);
+
+        btnVoltar.addActionListener(e -> voltarParaMainUI());
+
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -109,8 +125,8 @@ public class CidadeCreateUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao salvar cidade: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    public static void main(String[] args) {
-        new CidadeCreateUI();
+    private void voltarParaMainUI() {
+        mainUI.setVisible(true); // Torna MainUI visível novamente
+        dispose(); // Fecha a janela atual
     }
 }

@@ -1,95 +1,178 @@
 package com.transporte.transportadora.ui;
 
-import com.transporte.transportadora.ui.freteui.FreteCadastroUI;
-import com.transporte.transportadora.ui.freteui.FreteDeleteUI;
-import com.transporte.transportadora.ui.freteui.FreteListagemUI;
-import com.transporte.transportadora.ui.freteui.FreteUpdateUI;
+import com.transporte.transportadora.ui.cidadeui.*;
+import com.transporte.transportadora.ui.clienteui.*;
+import com.transporte.transportadora.ui.estadoui.*;
+import com.transporte.transportadora.ui.freteui.*;
+import com.transporte.transportadora.ui.pessoafisicaui.*;
+import com.transporte.transportadora.ui.pessoajuridicaui.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
 
+@Component
 public class MainUI extends JFrame {
 
-    private JButton btnCadastrarFrete;
-    private JButton btnUpdateFrete;
-    private JButton btnListagemFrete;
-    private JButton btnDeletarFrete;
+    private JComboBox<String> tabelaComboBox;
+    private JComboBox<String> operacaoComboBox;
+    private JButton confirmarButton;
+    private final ApplicationContext context;
+    public MainUI(ApplicationContext context) {
+        this.context = context;
+        initUI();
+    }
 
-    public MainUI() {
+    private void initUI() {
         setTitle("Sistema de Transporte - Tela Inicial");
-        setSize(400, 200);
+        setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new FlowLayout());
+        setLayout(new GridBagLayout());
 
-        btnCadastrarFrete = new JButton("Cadastrar Frete");
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        btnUpdateFrete = new JButton("Atualizar Frete");
+        // ComboBox Tabela
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(new JLabel("Selecione a Tabela:"), gbc);
 
-        btnListagemFrete = new JButton("Listar Fretes");
+        tabelaComboBox = new JComboBox<>(new String[]{"", "Cidade", "Cliente", "Estado", "Frete", "Pessoa Física", "Pessoa Jurídica"});
+        gbc.gridx = 1;
+        add(tabelaComboBox, gbc);
 
-        btnDeletarFrete = new JButton("Deletar Frete");
+        // ComboBox Operação
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        add(new JLabel("Selecione a Operação:"), gbc);
 
-        add(btnCadastrarFrete);
+        operacaoComboBox = new JComboBox<>(new String[]{"", "Cadastrar", "Listar", "Atualizar", "Deletar"});
+        gbc.gridx = 1;
+        add(operacaoComboBox, gbc);
 
-        add(btnUpdateFrete);
+        // Botão Confirmar
+        confirmarButton = new JButton("Confirmar");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        add(confirmarButton, gbc);
 
-        add(btnListagemFrete);
+        confirmarButton.addActionListener(e -> abrirTela());
 
-        add(btnDeletarFrete);
-
-        btnCadastrarFrete.addActionListener(e -> abrirTelaCadastroFrete());
-        btnUpdateFrete.addActionListener(e -> abrirTelaAtualizarCadastroDeFrete());
-        btnListagemFrete.addActionListener(e -> abrirTelaListarCadastroDeFrete());
-        btnDeletarFrete.addActionListener(e -> abrirTelaDeletarCadastroDeFrete());
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    private void abrirTelaCadastroFrete() {
-        this.setVisible(false);
-        FreteCadastroUI cadastroUI = new FreteCadastroUI();
-        cadastroUI.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                setVisible(true);
-            }
-        });
-    }
+    private void abrirTela() {
+        String tabela = (String) tabelaComboBox.getSelectedItem();
+        String operacao = (String) operacaoComboBox.getSelectedItem();
 
-    private void abrirTelaAtualizarCadastroDeFrete() {
-        this.setVisible(false);
-        FreteUpdateUI updateUI = new FreteUpdateUI();
-        updateUI.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                setVisible(true);
-            }
-        });
-    }
+        if (tabela == null || operacao == null || tabela.isEmpty() || operacao.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma tabela e uma operação.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    private void abrirTelaListarCadastroDeFrete() {
-        this.setVisible(false);
-        FreteListagemUI listarUI = new FreteListagemUI();
-        listarUI.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                setVisible(true);
-            }
-        });
-    }
+        JFrame tela = null;
 
-    private void abrirTelaDeletarCadastroDeFrete() {
-        this.setVisible(false);
-        FreteDeleteUI deletarUI = new FreteDeleteUI();
-        deletarUI.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                setVisible(true);
-            }
-        });
-    }
+        switch (tabela + operacao) {
+            case "CidadeCadastrar":
+                tela = context.getBean(CidadeCreateUI.class);
+                break;
+            case "CidadeListar":
+                tela = context.getBean(CidadeReadUI.class);
+                break;
+            case "CidadeAtualizar":
+                tela = context.getBean(CidadeUpdateUI.class);
+                break;
+            case "CidadeDeletar":
+                tela = context.getBean(CidadeDeleteUI.class);
+                break;
 
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(MainUI::new);
+            case "ClienteCadastrar":
+                tela = context.getBean(ClienteCreateUI.class);
+                break;
+            case "ClienteListar":
+                tela = context.getBean(ClienteCreateUI.class);
+                break;
+            case "ClienteAtualizar":
+                tela = context.getBean(ClienteCreateUI.class);
+                break;
+            case "ClienteDeletar":
+                tela = context.getBean(ClienteCreateUI.class);
+                break;
+
+            // Telas de Estado
+            case "EstadoCadastrar":
+                tela = context.getBean(EstadoCreateUI.class);
+                break;
+            case "EstadoListar":
+                tela = context.getBean(EstadoReadUI.class);
+                break;
+            case "EstadoAtualizar":
+                tela = context.getBean(EstadoUpdateUI.class);
+                break;
+            case "EstadoDeletar":
+                tela = context.getBean(EstadoDeleteUI.class);
+                break;
+
+            // Telas de Frete
+            case "FreteCadastrar":
+                tela = context.getBean(FreteCreateUI.class);
+                break;
+            case "FreteListar":
+                tela = context.getBean(FreteReadUI.class);
+                break;
+            case "FreteAtualizar":
+                tela = context.getBean(FreteUpdateUI.class);
+                break;
+            case "FreteDeletar":
+                tela = context.getBean(FreteDeleteUI.class);
+                break;
+
+            // Telas de Pessoa Física
+            case "Pessoa FísicaCadastrar":
+                tela = context.getBean(PessoaFisicaCreateUI.class);
+                break;
+            case "Pessoa FísicaListar":
+                tela = context.getBean(PessoaFisicaReadUI.class);
+                break;
+            case "Pessoa FísicaAtualizar":
+                tela = context.getBean(PessoaFisicaUpdateUI.class);
+                break;
+            case "Pessoa FísicaDeletar":
+                tela = context.getBean(PessoaFisicaDeleteUI.class);
+                break;
+
+            // Telas de Pessoa Jurídica
+            case "Pessoa JurídicaCadastrar":
+                tela = context.getBean(PessoaJuridicaCreateUI.class);
+                break;
+            case "Pessoa JurídicaListar":
+                tela = context.getBean(PessoaJuridicaReadUI.class);
+                break;
+            case "Pessoa JurídicaAtualizar":
+                tela = context.getBean(PessoaJuridicaUpdateUI.class);
+                break;
+            case "Pessoa JurídicaDeletar":
+                tela = context.getBean(PessoaJuridicaDeleteUI.class);
+                break;
+
+            default:
+                JOptionPane.showMessageDialog(this, "Opção inválida.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+        }
+
+        if (tela != null) {
+            this.setVisible(false);
+            tela.setVisible(true);
+            tela.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                    setVisible(true);
+                }
+            });
+        }
     }
 }

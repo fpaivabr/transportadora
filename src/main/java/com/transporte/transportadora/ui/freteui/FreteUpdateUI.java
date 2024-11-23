@@ -9,6 +9,8 @@ import com.transporte.transportadora.service.FreteService;
 import com.transporte.transportadora.service.impl.CidadeServiceImpl;
 import com.transporte.transportadora.service.impl.ClienteServiceImpl;
 import com.transporte.transportadora.service.impl.FreteServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
@@ -20,6 +22,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
+@Lazy
+@Component
 public class FreteUpdateUI extends JFrame {
 
     private JComboBox<Cliente> cmbRemetente;
@@ -27,26 +31,30 @@ public class FreteUpdateUI extends JFrame {
     private JComboBox<Cidade> cmbOrigem;
     private JComboBox<Cidade> cmbDestino;
     private JComboBox<Frete> cmbFretes;
-    private final JFormattedTextField txtDataFrete;
-    private final JFormattedTextField txtPeso;
-    private final JFormattedTextField txtValor;
-    private final JFormattedTextField txtIcms;
-    private final JFormattedTextField txtPedagio;
-    private final JButton btnBuscar;
-    private final JButton btnAtualizar;
+    private JFormattedTextField txtDataFrete;
+    private JFormattedTextField txtPeso;
+    private JFormattedTextField txtValor;
+    private JFormattedTextField txtIcms;
+    private JFormattedTextField txtPedagio;
+    private JButton btnBuscar;
+    private JButton btnAtualizar;
 
-    private FreteService freteService;
-    private CidadeService cidadeService;
-    private ClienteService clienteService;
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final FreteService freteService;
+    private final CidadeService cidadeService;
+    private final ClienteService clienteService;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public FreteUpdateUI() {
-        freteService = new FreteServiceImpl();
-        cidadeService = new CidadeServiceImpl();
-        clienteService = new ClienteServiceImpl();
+    public FreteUpdateUI(ClienteService clienteService, CidadeService cidadeService, FreteService freteService) {
+        this.freteService = freteService;
+        this.cidadeService = cidadeService;
+        this.clienteService = clienteService;
+        initUI();
+    }
+
+    private void initUI() {
         setTitle("Atualizar Frete");
         setSize(500, 700);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -132,14 +140,6 @@ public class FreteUpdateUI extends JFrame {
         add(cmbDestino, gbc);
 
         gbc.gridy++;
-        add(new JLabel("Remetente:"), gbc);
-        gbc.gridy++;
-        cmbRemetente = new JComboBox<>();
-        carregarClientes();
-        add(cmbRemetente, gbc);
-
-        // Seleção de destinatário
-        gbc.gridy++;
         add(new JLabel("Destinatário:"), gbc);
         gbc.gridy++;
         cmbDestinatario = new JComboBox<>();
@@ -162,6 +162,8 @@ public class FreteUpdateUI extends JFrame {
     private void carregarClientes() {
         try {
             List<Cliente> clientes = clienteService.listarTodos();
+            cmbRemetente.removeAllItems();
+            cmbDestinatario.removeAllItems();
             for (Cliente cliente : clientes) {
                 cmbRemetente.addItem(cliente);
                 cmbDestinatario.addItem(cliente);
@@ -174,6 +176,8 @@ public class FreteUpdateUI extends JFrame {
     private void carregarCidades() {
         try {
             List<Cidade> cidades = cidadeService.listarTodas();
+            cmbOrigem.removeAllItems();
+            cmbDestino.removeAllItems();
             for (Cidade cidade : cidades) {
                 cmbOrigem.addItem(cidade);
                 cmbDestino.addItem(cidade);
@@ -256,9 +260,5 @@ public class FreteUpdateUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar frete: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        new FreteUpdateUI();
     }
 }

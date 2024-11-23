@@ -6,9 +6,8 @@ import com.transporte.transportadora.model.Frete;
 import com.transporte.transportadora.service.CidadeService;
 import com.transporte.transportadora.service.ClienteService;
 import com.transporte.transportadora.service.FreteService;
-import com.transporte.transportadora.service.impl.CidadeServiceImpl;
-import com.transporte.transportadora.service.impl.ClienteServiceImpl;
-import com.transporte.transportadora.service.impl.FreteServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
@@ -21,7 +20,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-public class FreteCadastroUI extends JFrame {
+@Lazy
+@Component
+public class FreteCreateUI extends JFrame {
 
     private JFormattedTextField txtDataFrete;
     private JFormattedTextField txtPeso;
@@ -34,15 +35,18 @@ public class FreteCadastroUI extends JFrame {
     private JComboBox<Cliente> cmbDestinatario;
     private JButton btnSalvar;
 
-    private FreteService freteService;
-    private CidadeService cidadeService;
-    private ClienteService clienteService;
+    private final FreteService freteService;
+    private final CidadeService cidadeService;
+    private final ClienteService clienteService;
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public FreteCadastroUI() {
-        freteService = new FreteServiceImpl();
-        cidadeService = new CidadeServiceImpl();
-        clienteService = new ClienteServiceImpl();
+    public FreteCreateUI(ClienteService clienteService, CidadeService cidadeService, final FreteService freteService) {
+        this.freteService = freteService;
+        this.cidadeService = cidadeService;
+        this.clienteService = clienteService;
+        initUI();
+    }
+    private void initUI() {
         setTitle("Cadastro de Frete");
         setSize(500, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -218,9 +222,5 @@ public class FreteCadastroUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar o frete: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        new FreteCadastroUI();
     }
 }

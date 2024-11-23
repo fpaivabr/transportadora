@@ -1,23 +1,28 @@
+
 package com.transporte.transportadora.ui.freteui;
 
 import com.transporte.transportadora.model.Frete;
 import com.transporte.transportadora.service.FreteService;
 import com.transporte.transportadora.service.impl.FreteServiceImpl;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
+@Lazy
+@Component
 public class FreteListagemUI extends JFrame {
 
     private JTable tabelaFretes;
     private DefaultTableModel tableModel;
     private JButton btnAtualizar;
-    private FreteService freteService;
+    private final FreteService freteService;
 
-    public FreteListagemUI() {
-        freteService = new FreteServiceImpl();
+    public FreteListagemUI(FreteService freteService) {
+        this.freteService = freteService;
         setTitle("Listagem de Fretes");
         setSize(800, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,9 +73,5 @@ public class FreteListagemUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar fretes: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        new FreteListagemUI();
     }
 }

@@ -14,8 +14,11 @@ import java.util.Optional;
 @Service
 public class FreteServiceImpl implements FreteService {
 
-    @Autowired
-    private FreteRepository freteRepository;
+    private final FreteRepository freteRepository;
+
+    public FreteServiceImpl(FreteRepository freteRepository){
+        this.freteRepository = freteRepository;
+    }
 
     @Override
     public Frete salvarFrete(Frete frete) {
