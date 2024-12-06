@@ -1,32 +1,41 @@
 package com.transporte.transportadora.ui;
 
-import com.transporte.transportadora.ui.cidadeui.*;
-import com.transporte.transportadora.ui.clienteui.*;
-import com.transporte.transportadora.ui.estadoui.*;
-import com.transporte.transportadora.ui.freteui.*;
-import com.transporte.transportadora.ui.pessoafisicaui.*;
-import com.transporte.transportadora.ui.pessoajuridicaui.*;
-import org.springframework.context.ApplicationContext;
+import com.transporte.transportadora.model.Estado;
+import com.transporte.transportadora.repository.EstadoRepository;
+import com.transporte.transportadora.service.BuscaService;
+import com.transporte.transportadora.ui.cidadeui.ArrecadacaoUI;
+import com.transporte.transportadora.ui.cidadeui.FretesPJUI;
+import com.transporte.transportadora.ui.cidadeui.MediaFretesUI;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 @Component
 public class MainUI extends JFrame {
 
+    private final EstadoRepository estadoRepository;
+    private final BuscaService buscaService;
+
     private JComboBox<String> tabelaComboBox;
-    private JComboBox<String> operacaoComboBox;
+    private JComboBox<String> estadoComboBox;
+    private JComboBox<String> mesComboBox;
+    private JTextField anoTextField;
     private JButton confirmarButton;
-    private final ApplicationContext context;
-    public MainUI(ApplicationContext context) {
-        this.context = context;
+    private JButton carregarEstadosButton;
+
+    @Autowired
+    public MainUI(EstadoRepository estadoRepository, BuscaService buscaService) {
+        this.estadoRepository = estadoRepository;
+        this.buscaService = buscaService;
         initUI();
     }
 
     private void initUI() {
         setTitle("Sistema de Transporte - Tela Inicial");
-        setSize(400, 300);
+        setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridBagLayout());
 
@@ -34,28 +43,57 @@ public class MainUI extends JFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // ComboBox Tabela
+        // Seleção de Operação
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(new JLabel("Selecione a Tabela:"), gbc);
+        add(new JLabel("Selecione a Operação:"), gbc);
 
-        tabelaComboBox = new JComboBox<>(new String[]{"", "Cidade", "Cliente", "Estado", "Frete", "Pessoa Física", "Pessoa Jurídica"});
+        tabelaComboBox = new JComboBox<>(new String[]{
+                "",
+                "Arrecadação por cidade/estado no ano de 2024",
+                "Quantidade média de fretes (origem/destino)",
+                "Fretes atendidos por PJ no mês/ano"
+        });
         gbc.gridx = 1;
         add(tabelaComboBox, gbc);
 
-        // ComboBox Operação
+        // Seleção de Estado
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(new JLabel("Selecione a Operação:"), gbc);
+        add(new JLabel("Estado:"), gbc);
 
-        operacaoComboBox = new JComboBox<>(new String[]{"", "Cadastrar", "Listar", "Atualizar", "Deletar"});
+        estadoComboBox = new JComboBox<>(new String[]{"Carregue os estados"});
         gbc.gridx = 1;
-        add(operacaoComboBox, gbc);
+        add(estadoComboBox, gbc);
+
+        // Botão para carregar estados
+        carregarEstadosButton = new JButton("Carregar Estados");
+        carregarEstadosButton.addActionListener(e -> carregarEstados());
+        gbc.gridx = 2;
+        add(carregarEstadosButton, gbc);
+
+        // Seleção de Mês
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(new JLabel("Mês:"), gbc);
+
+        mesComboBox = new JComboBox<>(getMeses());
+        gbc.gridx = 1;
+        add(mesComboBox, gbc);
+
+        // Entrada de Ano
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        add(new JLabel("Ano:"), gbc);
+
+        anoTextField = new JTextField();
+        gbc.gridx = 1;
+        add(anoTextField, gbc);
 
         // Botão Confirmar
         confirmarButton = new JButton("Confirmar");
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 4;
         gbc.gridwidth = 2;
         add(confirmarButton, gbc);
 
@@ -65,108 +103,67 @@ public class MainUI extends JFrame {
         setVisible(true);
     }
 
-    private void abrirTela() {
-        String tabela = (String) tabelaComboBox.getSelectedItem();
-        String operacao = (String) operacaoComboBox.getSelectedItem();
+    public String[] getMeses() {
+        return new String[]{
+                "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+                "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+        };
+    }
 
-        if (tabela == null || operacao == null || tabela.isEmpty() || operacao.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecione uma tabela e uma operação.", "Erro", JOptionPane.ERROR_MESSAGE);
+    private void carregarEstados() {
+        try {
+            String[] estados = {"São Pauloooo",
+                    "Rio de Janeiroooo",
+                    "TESTE_CIDADE",
+                    "São Paulo",
+                    "Rio de Janeiro"};
+            for (String estado : estados) {
+                estadoComboBox.addItem(estado);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar estados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void abrirTela() {
+        String operacao = (String) tabelaComboBox.getSelectedItem();
+        String estado = (String) estadoComboBox.getSelectedItem();
+        String mes = (String) mesComboBox.getSelectedItem();
+        String ano = anoTextField.getText();
+
+        if (operacao == null || operacao.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione uma operação.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        JFrame tela = null;
-
-        switch (tabela + operacao) {
-            case "CidadeCadastrar":
-                tela = context.getBean(CidadeCreateUI.class);
-                break;
-            case "CidadeListar":
-                tela = context.getBean(CidadeReadUI.class);
-                break;
-            case "CidadeAtualizar":
-                tela = context.getBean(CidadeUpdateUI.class);
-                break;
-            case "CidadeDeletar":
-                tela = context.getBean(CidadeDeleteUI.class);
+        switch (operacao) {
+            case "Arrecadação por cidade/estado no ano de 2024":
+                if (estado == null || estado.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Por favor, selecione um estado.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                new ArrecadacaoUI(buscaService.buscarArrecadacaoPorEstado(estado)).setVisible(true);
                 break;
 
-            case "ClienteCadastrar":
-                tela = context.getBean(ClienteCreateUI.class);
-                break;
-            case "ClienteListar":
-                tela = context.getBean(ClienteReadUI.class);
-                break;
-            case "ClienteAtualizar":
-                tela = context.getBean(ClienteUpdateUI.class);
-                break;
-            case "ClienteDeletar":
-                tela = context.getBean(ClienteDeleteUI.class);
+            case "Quantidade média de fretes (origem/destino)":
+                if (estado == null || estado.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Por favor, selecione um estado.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                new MediaFretesUI(buscaService.buscarMediaFretes(estado)).setVisible(true);
                 break;
 
-            // Telas de Estado
-            case "EstadoCadastrar":
-                tela = context.getBean(EstadoCreateUI.class);
-                break;
-            case "EstadoListar":
-                tela = context.getBean(EstadoReadUI.class);
-                break;
-            case "EstadoAtualizar":
-                tela = context.getBean(EstadoUpdateUI.class);
-                break;
-            case "EstadoDeletar":
-                tela = context.getBean(EstadoDeleteUI.class);
-                break;
-
-            // Telas de Frete
-            case "FreteCadastrar":
-                tela = context.getBean(FreteCreateUI.class);
-                break;
-            case "FreteListar":
-                tela = context.getBean(FreteReadUI.class);
-                break;
-            case "FreteAtualizar":
-                tela = context.getBean(FreteUpdateUI.class);
-                break;
-            case "FreteDeletar":
-                tela = context.getBean(FreteDeleteUI.class);
-                break;
-
-            // Telas de Pessoa Física
-            case "Pessoa FísicaListar":
-                tela = context.getBean(PessoaFisicaReadUI.class);
-                break;
-            case "Pessoa FísicaAtualizar":
-                tela = context.getBean(PessoaFisicaUpdateUI.class);
-                break;
-            case "Pessoa FísicaDeletar":
-                tela = context.getBean(PessoaFisicaDeleteUI.class);
-                break;
-
-            // Telas de Pessoa Jurídica
-            case "Pessoa JurídicaListar":
-                tela = context.getBean(PessoaJuridicaReadUI.class);
-                break;
-            case "Pessoa JurídicaAtualizar":
-                tela = context.getBean(PessoaJuridicaUpdateUI.class);
-                break;
-            case "Pessoa JurídicaDeletar":
-                tela = context.getBean(PessoaJuridicaDeleteUI.class);
+            case "Fretes atendidos por PJ no mês/ano":
+                if (mes == null || mes.isEmpty() || ano.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Por favor, preencha mês e ano.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                new FretesPJUI(buscaService.buscarFretesAtendidosPorPJ(mes, ano)).setVisible(true);
                 break;
 
             default:
-                JOptionPane.showMessageDialog(this, "Opção inválida.", "Erro", JOptionPane.ERROR_MESSAGE);
-                return;
-        }
-
-        if (tela != null) {
-            this.setVisible(false);
-            tela.setVisible(true);
-            tela.addWindowListener(new java.awt.event.WindowAdapter() {
-                @Override
-                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                    setVisible(true);
-                }
-            });
+                JOptionPane.showMessageDialog(this, "Operação inválida.", "Erro", JOptionPane.ERROR_MESSAGE);
+                break;
         }
     }
 }
